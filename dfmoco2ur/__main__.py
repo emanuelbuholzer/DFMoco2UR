@@ -1,10 +1,10 @@
 import logging
 import argparse
 import yaml
-import sys
 from pathlib import Path
 from xdg import XDG_CONFIG_HOME
-from dfmoco2ur import scheduler
+from dfmoco2ur import bridge
+import asyncio
 
 
 if __name__ == '__main__':
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     try:
         with open(args.config, 'r') as raw_config:
             config = yaml.load(raw_config, Loader=yaml.FullLoader)
-            scheduler.run(config)
+            asyncio.run(bridge.run(config))
     except FileNotFoundError as err:
         logging.critical(err)
-        sys.exit(1)
+        exit(1)
