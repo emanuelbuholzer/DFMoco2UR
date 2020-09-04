@@ -24,6 +24,8 @@ if __name__ == '__main__':
     # Setup logging
     # TODO: We might want to send our logs out via a Websocket.
     logging.basicConfig(level=args.logLevel)
+    logging.getLogger('ursecmon').setLevel(logging.INFO)
+    logging.getLogger('urx').setLevel(logging.INFO)
 
     # Parse the configuration and run the scheduler
     if args.config == default_config_path:

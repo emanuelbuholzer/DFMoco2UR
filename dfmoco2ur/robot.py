@@ -10,6 +10,7 @@ class Robot:
         self.config = config
         self.robot = urx.Robot(self.config['ur']['host'])
         self.initial_pos = np.array(self.robot.getl())
+        self.halli = np.copy(self.initial_pos)
         self.num_axes = 6
         self.target_pos = self.initial_pos
 
@@ -43,8 +44,10 @@ class Robot:
         self.target_pos[axis] = new_value
 
     def move_to_target_pos(self):
-        pose = self._unscale_pos(self.target_pos, self.initial_pos)
-        self.robot.movel(pose, wait=False)
+        pose = self._unscale_pos(self.target_pos, self.halli)
+        logging.error(self.initial_pos)
+        logging.error(pose)
+        self.robot.movel(pose, wait=True)
 
     def stop(self, axis=None):
         if axis is None:
