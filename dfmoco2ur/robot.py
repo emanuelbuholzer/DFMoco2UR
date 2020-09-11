@@ -3,16 +3,26 @@ import time
 import numpy as np
 import urx
 import logging
+import asyncio
+from aiolimiter import AsyncLimiter
 
+rate_limit = AsyncLimiter(1, 5)
 
 class Robot:
     def __init__(self, config):
         self.config = config
         self.robot = urx.Robot(self.config['ur']['host'])
-        self.initial_pos = np.array(self.robot.getl())
-        self.halli = np.copy(self.initial_pos)
+        self.initial_pos = np.copy(np.array(self.robot.getl()))
         self.num_axes = 6
-        self.target_pos = self.initial_pos
+        self.target_pos = np.copy(self.initial_pos)
+        self.scale = np.array([
+            config['ur']['scale']['x'],
+            config['ur']['scale']['y'],
+            config['ur']['scale']['z'],
+            config['ur']['scale']['rx'],
+            config['ur']['scale']['ry'],
+            config['ur']['scale']['rz'],
+        ])
 
     # TODO: Make this configurable
     def setup(self):
@@ -30,24 +40,24 @@ class Robot:
     def _scale_pos(self, pos, initial_pos):
         return np.around(np.multiply(
             np.array(pos) - initial_pos,
-            self.config['ur']['scale']
+            self.scale
         ), decimals=0)
 
     def _unscale_pos(self, pos, initial_pos):
-        return (pos / self.config['ur']['scale']) + initial_pos
+        return (pos / self.scale) + initial_pos
 
     def get_pos(self):
         # Meters * scale, e.g. scale = 1000 => mm
-        return self._scale_pos(self.robot.getl(), self.initial_pos)
+        return self._scale_pos(self.robot.getl(), self.initial_pos).astype(int)
 
     def update_target_pos(self, axis, new_value):
         self.target_pos[axis] = new_value
 
-    def move_to_target_pos(self):
-        pose = self._unscale_pos(self.target_pos, self.halli)
-        logging.error(self.initial_pos)
-        logging.error(pose)
-        self.robot.movel(pose, wait=True)
+    async def move_to_target_pos(self):
+        async with rate_limit:
+            asyncio.sleep(10)
+            pose = self._unscale_pos(self.target_pos, self.initial_pos)
+            self.robot.movel(pose, 0.1, 0.1, wait=True)
 
     def stop(self, axis=None):
         if axis is None:
@@ -62,6 +72,9 @@ class Robot:
 
     def set_motor_pos(self, axis, value):
         self.initial_pos[axis] += value
+
+    def set_freedrive(self, val):
+        self.robot.set_freedrive(val)
 
 
 

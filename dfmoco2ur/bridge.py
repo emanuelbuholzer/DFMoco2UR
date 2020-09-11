@@ -30,6 +30,7 @@ def get_handle(config):
 
 
 async def pos_heartbeat(handle, writer):
+    pass
     while True:
         for index, pos in enumerate(handle.robot.get_pos()):
             writer.write(bytes(f"mp {index + 1} {pos}\r\n", encoding='ascii'))
@@ -44,17 +45,20 @@ def get_messsage_handler(_, handle):
         while True:
             try:
                 data = yield from reader.readuntil(separator=b'\r\n')
+                logging.debug(data)
 
                 # Parse message
                 msg_len = len(data)
                 msg_kind = data[0:2]
                 msg_args = data[3:msg_len-2].split(b' ')
-                logging.info(msg_args)
-                logging.info(msg_kind)
                 if msg_kind == b'by':
                     break
 
-                handler = _message_handlers.get(msg_kind, message_handlers.unknown_message)
+                handler = _message_handlers.get(msg_kind, False)
+                if not handler:
+                    logging.info(f"Received unknown message: {data}")
+                    continue
+
                 res = yield from handler(handle, msg_args)
 
                 # TODO: We might want to use multiple outputs

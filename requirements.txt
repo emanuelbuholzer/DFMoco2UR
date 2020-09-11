@@ -3,3 +3,4 @@ pyyaml
 urx == 0.11.0
 xdg
 numpy
+aiolimiter
