@@ -22,11 +22,11 @@ _message_handlers = {
 
 
 def get_handle(config):
-    Handle = namedtuple('Handle', ['robot'])
+    Handle = namedtuple('Handle', ['config', 'robot'])
 
     robot = Robot(config)
 
-    return Handle(robot)
+    return Handle(config, robot)
 
 
 async def pos_heartbeat(handle, writer):
