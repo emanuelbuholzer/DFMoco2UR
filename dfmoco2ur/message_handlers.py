@@ -14,52 +14,46 @@ async def unsupported_operation(_handle, _msg_args):
 
 
 async def init_robot(handle, _msg_args):
+    await handle.robot.setup()
+
     version = __version__
     major_version = __version__.split('.')[0]
-
-    return f"hi {major_version} {handle.robot.num_axes} {version}"
+    num_axes = await handle.robot.get_num_axes()
+    return f"hi {major_version} {num_axes} {version}"
 
 
 async def are_motors_moving(handle, msg_args):
-    # initial_pos = handle.robot.get_pos()
-    # max_iters = 5
-    # for i in range(0, max_iters):
-    #     await asyncio.sleep(0.1)
-    #     delta = np.abs(initial_pos - handle.robot.get_pos())
-    #     if (delta == np.zeros(6)).all():
-    #         continue
-    #     l_delta = np.logical_and(delta > 0, delta > 0)
-    #     status = ''.join(['1' if d else '0' for d in l_delta])
-    #     return f"ms {status}"
-    # # After sending a program it might take several 10th of seconds before the robot enters the running state
     return f"ms 000000"
 
 
 async def move_motor_to_pos(handle, msg_args):
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes+1):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes+1):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
         return ""
 
     # TODO: Should we enforce limits?
-    pos = int(msg_args[1])
+    target_pos = int(msg_args[1])
 
-    handle.robot.update_target_pos(axis, pos)
+    await handle.robot.set_target_pos(axis, target_pos)
 
     asyncio.ensure_future(handle.robot.move_to_target_pos())
 
-    pos_delta = pos - handle.robot.get_pos()[axis]
+    actual_pos = handle.robot.get_pos()[axis]
+    pos_delta = target_pos - actual_pos
     if pos_delta == 0:
-        return f"mp {axis + 1} {pos}"
+        return f"mp {axis + 1} {target_pos}"
     else:
         return f"mm {axis + 1} {pos_delta}"
 
 
 async def get_motor_pos(handle, msg_args):
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes+1):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes+1):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
@@ -72,7 +66,8 @@ async def get_motor_pos(handle, msg_args):
 
 async def stop_motor(handle, msg_args):
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes+1):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes+1):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
@@ -84,7 +79,7 @@ async def stop_motor(handle, msg_args):
 
 
 async def stop_motors(handle, _):
-    handle.robot.stop()
+    #handle.robot.stop()
     return "sa"
 
 
@@ -92,20 +87,16 @@ async def jog_motor(handle, msg_args):
     """
     Move the motor at a reasonable speed into a direction
     """
-
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes+1):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes+1):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
         return ""
 
-    axis_pos = handle.robot.get_pos()[axis]
-    jog_factor = handle.config.get(f'axis.{axis}.jog_factor')
-    relative_goal = np.sign(int(msg_args[1])) * jog_factor
-
-    handle.robot.update_target_pos(axis, axis_pos + relative_goal)
-    await handle.robot.move_to_target_pos(direct=True)
+    direction = int(msg_args[1])
+    await handle.robot.step("jog", axis, direction)
 
     axis_pos = handle.robot.get_pos()[axis]
     return f"jm {axis + 1}\r\nmp {axis+1} {axis_pos}"
@@ -115,20 +106,16 @@ async def inch_motor(handle, msg_args):
     """
     Move the in very small increments into a direction
     """
-
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes + 1):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes+1):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
         return ""
 
-    axis_pos = handle.robot.get_pos()[axis]
-    inch_factor = handle.config.get('axis.{axis}.inch_factor')
-    relative_goal = np.sign(int(msg_args[1])) * inch_factor
-
-    handle.robot.update_target_pos(axis, axis_pos + relative_goal)
-    await handle.robot.move_to_target_pos(direct=True)
+    direction = int(msg_args[1])
+    await handle.robot.step("inch", axis, direction)
 
     axis_pos = handle.robot.get_pos()[axis]
     return f"im {axis + 1}\r\nmp {axis+1} {axis_pos}"
@@ -141,18 +128,22 @@ async def set_motor_pulse_rate(handle, msg_args):
 
 async def zero_motor_pos(handle, msg_args):
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
         return ""
 
-    handle.robot.zero_motor_pos(axis)
+    await handle.robot.set_origin_axis(axis)
+
+    return f"zm {axis+1}"
 
 
 async def set_motor_pos(handle, msg_args):
     axis = int(msg_args[0])
-    if axis in range(1, handle.robot.num_axes):
+    num_axes = await handle.robot.get_num_axes()
+    if axis in range(1, num_axes):
         axis -= 1
     else:
         logger.error(f"No such axis ({axis})")
@@ -160,4 +151,6 @@ async def set_motor_pos(handle, msg_args):
 
     pos = int(msg_args[1])
 
-    handle.robot.set_motor_pos(axis, pos)
+    await handle.robot.set_origin_axis(axis, pos)
+
+    return f"np {axis+1} {pos}"

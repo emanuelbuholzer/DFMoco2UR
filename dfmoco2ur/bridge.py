@@ -1,10 +1,11 @@
 import asyncio
 import logging
 from collections import namedtuple
+import urx
 
 from dfmoco2ur import message_handlers
-from dfmoco2ur.robot import Robot
-
+#from dfmoco2ur.robot import Robot
+from dfmoco2ur.ur.robot import Robot
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,9 @@ def get_handle(config):
 
 
 async def pos_heartbeat(handle, writer):
+    while not handle.robot.has_setup:
+        await asyncio.sleep(1)
+    await asyncio.sleep(1)
     while True:
         for index, pos in enumerate(handle.robot.get_pos()):
             writer.write(bytes(f"mp {index + 1} {pos}\r\n", encoding='ascii'))
@@ -66,6 +70,8 @@ def get_messsage_handler(_, handle):
                 writer.write(bytes(f"{res}\r\n", encoding='ascii'))
                 yield from writer.drain()
             except asyncio.IncompleteReadError:
+                continue
+            except urx.urrobot.RobotException:
                 continue
         yield from pos_heartbeat_task
     return handle_message
