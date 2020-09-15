@@ -5,6 +5,10 @@ from collections import namedtuple
 from dfmoco2ur import message_handlers
 from dfmoco2ur.robot import Robot
 
+
+logger = logging.getLogger(__name__)
+
+
 _message_handlers = {
     b'hi': message_handlers.init_robot,
     b'ms': message_handlers.are_motors_moving,
@@ -30,7 +34,6 @@ def get_handle(config):
 
 
 async def pos_heartbeat(handle, writer):
-    pass
     while True:
         for index, pos in enumerate(handle.robot.get_pos()):
             writer.write(bytes(f"mp {index + 1} {pos}\r\n", encoding='ascii'))
@@ -45,7 +48,7 @@ def get_messsage_handler(_, handle):
         while True:
             try:
                 data = yield from reader.readuntil(separator=b'\r\n')
-                logging.debug(data)
+                logger.debug(f"Received message from Dragonframe: {data}")
 
                 # Parse message
                 msg_len = len(data)
@@ -56,31 +59,27 @@ def get_messsage_handler(_, handle):
 
                 handler = _message_handlers.get(msg_kind, False)
                 if not handler:
-                    logging.info(f"Received unknown message: {data}")
+                    logger.debug(f"Received unknown message: {data}")
                     continue
 
                 res = yield from handler(handle, msg_args)
-
-                # TODO: We might want to use multiple outputs
                 writer.write(bytes(f"{res}\r\n", encoding='ascii'))
                 yield from writer.drain()
-            except asyncio.IncompleteReadError as e:
-                pass
+            except asyncio.IncompleteReadError:
+                continue
         yield from pos_heartbeat_task
-
     return handle_message
-
 
 async def run(config):
     handle = get_handle(config)
 
-    host = config['df']['host']
-    port = config['df']['port']
+    host = config.get('df.host')
+    port = config.get('df.port')
     message_handler = get_messsage_handler(config, handle)
     server = await asyncio.start_server(message_handler, host, port)
 
     addr = server.sockets[0].getsockname()
-    logging.info(f'Serving DFMoco2UR bridge on {addr}')
+    logger.info(f'Serving DFMoco2UR bridge on {addr}')
 
     async with server:
         await server.serve_forever()

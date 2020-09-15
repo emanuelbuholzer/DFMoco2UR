@@ -4,6 +4,7 @@ import yaml
 from pathlib import Path
 from xdg import XDG_CONFIG_HOME
 from dfmoco2ur import bridge
+from dfmoco2ur.config import Configuration
 import asyncio
 
 
@@ -25,21 +26,17 @@ if __name__ == '__main__':
     # Parse the configuration and run the scheduler
     try:
         with open(args.config, 'r') as raw_config:
-            config = yaml.load(raw_config, Loader=yaml.FullLoader)
-
+            config = Configuration(yaml.load(raw_config, Loader=yaml.FullLoader))
+            
             # Setup logging
             # TODO: We might want to send our logs out via a Websocket.
-            for logger in config['logging']:
-                if logger == "dfmoco2ur":
-                    logging.basicConfig(level=config['logging'][logger])
-                else:
-                    logging.getLogger(logger).setLevel(config['logging'][logger])
-
-            if args.config == default_config_path:
-                logging.info(f"Using default configuration from {args.config}")
-            else:
-                logging.debug(f"Using custom configuration from {args.config}")
-
+            logger = logging.getLogger("dfmoco2ur")
+            logger.setLevel(config.get("logging.dfmoco2ur"))
+            logger.addHandler(logging.StreamHandler())
+            for l in config.get('logging'):
+                level = config.get(f'logging.{l}')
+                logging.getLogger(l).setLevel(level)
+            
             asyncio.run(bridge.run(config))
     except FileNotFoundError as err:
         logging.critical(err)

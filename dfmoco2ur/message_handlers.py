@@ -5,8 +5,11 @@ from dfmoco2ur import __version__
 from aiolimiter import AsyncLimiter
 
 
+logger = logging.getLogger(__name__)
+
+
 async def unsupported_operation(_handle, _msg_args):
-    logging.info("Unsupported operation called")
+    logger.info("Unsupported operation called")
     return ""
 
 
@@ -37,7 +40,7 @@ async def move_motor_to_pos(handle, msg_args):
     if axis in range(1, handle.robot.num_axes+1):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     # TODO: Should we enforce limits?
@@ -59,7 +62,7 @@ async def get_motor_pos(handle, msg_args):
     if axis in range(1, handle.robot.num_axes+1):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     pos = handle.robot.get_pos()
@@ -72,7 +75,7 @@ async def stop_motor(handle, msg_args):
     if axis in range(1, handle.robot.num_axes+1):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     # handle.robot.stop(axis)
@@ -94,15 +97,15 @@ async def jog_motor(handle, msg_args):
     if axis in range(1, handle.robot.num_axes+1):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     axis_pos = handle.robot.get_pos()[axis]
-    jog_factor = handle.config['axis'][axis]['jog_factor']
+    jog_factor = handle.config.get(f'axis.{axis}.jog_factor')
     relative_goal = np.sign(int(msg_args[1])) * jog_factor
 
     handle.robot.update_target_pos(axis, axis_pos + relative_goal)
-    await handle.robot.move_to_target_pos()
+    await handle.robot.move_to_target_pos(direct=True)
 
     axis_pos = handle.robot.get_pos()[axis]
     return f"jm {axis + 1}\r\nmp {axis+1} {axis_pos}"
@@ -117,15 +120,15 @@ async def inch_motor(handle, msg_args):
     if axis in range(1, handle.robot.num_axes + 1):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     axis_pos = handle.robot.get_pos()[axis]
-    inch_factor = handle.config['axis'][axis]['inch_factor']
+    inch_factor = handle.config.get('axis.{axis}.inch_factor')
     relative_goal = np.sign(int(msg_args[1])) * inch_factor
 
     handle.robot.update_target_pos(axis, axis_pos + relative_goal)
-    await handle.robot.move_to_target_pos()
+    await handle.robot.move_to_target_pos(direct=True)
 
     axis_pos = handle.robot.get_pos()[axis]
     return f"im {axis + 1}\r\nmp {axis+1} {axis_pos}"
@@ -141,7 +144,7 @@ async def zero_motor_pos(handle, msg_args):
     if axis in range(1, handle.robot.num_axes):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     handle.robot.zero_motor_pos(axis)
@@ -152,7 +155,7 @@ async def set_motor_pos(handle, msg_args):
     if axis in range(1, handle.robot.num_axes):
         axis -= 1
     else:
-        logging.error(f"No such axis ({axis})")
+        logger.error(f"No such axis ({axis})")
         return ""
 
     pos = int(msg_args[1])
