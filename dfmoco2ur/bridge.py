@@ -72,6 +72,7 @@ def get_messsage_handler(_, handle):
             except asyncio.IncompleteReadError:
                 continue
             except urx.urrobot.RobotException:
+                logger.error("Robot stopped")
                 continue
         yield from pos_heartbeat_task
     return handle_message

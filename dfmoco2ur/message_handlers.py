@@ -6,7 +6,7 @@ from aiolimiter import AsyncLimiter
 
 
 logger = logging.getLogger(__name__)
-
+init_limit = AsyncLimiter(1, 10)
 
 async def unsupported_operation(_handle, _msg_args):
     logger.info("Unsupported operation called")
@@ -15,12 +15,10 @@ async def unsupported_operation(_handle, _msg_args):
 
 async def init_robot(handle, _msg_args):
     await handle.robot.setup()
-
     version = __version__
     major_version = __version__.split('.')[0]
     num_axes = await handle.robot.get_num_axes()
     return f"hi {major_version} {num_axes} {version}"
-
 
 async def are_motors_moving(handle, msg_args):
     return f"ms 000000"
@@ -38,7 +36,7 @@ async def move_motor_to_pos(handle, msg_args):
     # TODO: Should we enforce limits?
     target_pos = int(msg_args[1])
 
-    await handle.robot.set_target_pos(axis, target_pos)
+    await handle.robot.set_target_pos(target_pos, axis)
 
     asyncio.ensure_future(handle.robot.move_to_target_pos())
 
@@ -73,7 +71,7 @@ async def stop_motor(handle, msg_args):
         logger.error(f"No such axis ({axis})")
         return ""
 
-    # handle.robot.stop(axis)
+    await handle.robot.stop_axis(axis)
 
     return f"sm {axis+1}"
 
@@ -96,7 +94,7 @@ async def jog_motor(handle, msg_args):
         return ""
 
     direction = int(msg_args[1])
-    await handle.robot.step("jog", axis, direction)
+    await handle.robot.step_axis("jog", axis, direction)
 
     axis_pos = handle.robot.get_pos()[axis]
     return f"jm {axis + 1}\r\nmp {axis+1} {axis_pos}"
@@ -115,7 +113,7 @@ async def inch_motor(handle, msg_args):
         return ""
 
     direction = int(msg_args[1])
-    await handle.robot.step("inch", axis, direction)
+    await handle.robot.step_axis("inch", axis, direction)
 
     axis_pos = handle.robot.get_pos()[axis]
     return f"im {axis + 1}\r\nmp {axis+1} {axis_pos}"

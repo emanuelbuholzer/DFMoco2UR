@@ -3,6 +3,7 @@ import urx
 import time
 import logging
 import asyncio
+import math3d as m3d
 from aiolimiter import AsyncLimiter
 
 from dfmoco2ur.ur.axis.controller import AxisController
@@ -19,10 +20,30 @@ class Robot:
     def _get_pos(self):
         return np.copy(np.array(self.robot.getl()))
 
+    def _speedl(self, velocities, acc):
+        """
+        Move at given velocities.
+
+        Copied from the python-urx library end removed min_time to make it compatible.
+        """
+        v = self.robot.csys.orient * m3d.Vector(velocities[:3])
+        w = self.robot.csys.orient * m3d.Vector(velocities[3:])
+        vels = np.concatenate((v.array, w.array))
+
+        # TODO: This is a FIXME in the original code.
+        max_float_length = 6
+        vels = [round(i, max_float_length, ) for i in velocities]
+        vels.append(acc)
+        prog = "speedl([{},{},{},{},{},{}], a={})".format(*vels)
+        self.robot.send_program(prog)
+
     async def setup(self):
         """
         Setup the robot. This method must run before everything else.
         """
+        if self.has_setup:
+            return
+
         async with self.lock:
             self.robot = urx.Robot(self.config.get('ur.host'))
 
@@ -130,47 +151,46 @@ class Robot:
         """
         return self.axis_controller.scale_pos(self._get_pos(), self._origin)
     
-    async def set_target_pos(self, axis, target_pos):
+    async def set_target_pos(self, target_pos, axis=None):
         """
         Set the target position of the robot on the virtual axis.
         """
         num_axes = await self.get_num_axes()
-        if not axis in range(0, num_axes):
-            raise Exception(f"No such axis {axis}")
-        if not type(target_pos) in [int, np.int, np.int16, np.int32, np.int64]:
-            raise TypeError(f"Target position must be an integer {type(target_pos)}")
-        
-        async with self.lock:
-            self.target_pos[axis] = target_pos
+        if not axis and axis != 0:
+            if len(target_pos) != num_axes:
+                raise TypeError(f"Target position must be a tuple of length {num_axes}")
+            
+            async with self.lock:
+                self.target_pos = np.copy(np.array(target_pos))
+        else:
+            if not axis in range(0, num_axes):
+                raise Exception(f"No such axis {axis}")
+            if not type(target_pos) in [int, np.int, np.int16, np.int32, np.int64]:
+                raise TypeError(f"Target position must be an integer {type(target_pos)}")
+            
+            async with self.lock:
+                self.target_pos[axis] = target_pos
     
-    async def _move_to_target_pos(self, wait):
+    async def _move_to_target_pos(self):
         pos = None
         await self.lock.acquire()
         try:
             pos = self.axis_controller.unscale_pos(self.target_pos, self._origin)
         finally:
             self.lock.release()
-            if wait:
-                self.robot.movel(pos, self.acc, self.vel, wait=wait)
-            else:
-                # TODO: Something to combine jogs and inches to make it smoother and faster
-                self.robot.movel(pos, self.acc, self.vel, wait=wait)
+            self.robot.movel(pos, self.acc, self.vel, wait=True)
 
-    async def move_to_target_pos(self, direct=False):
+    async def move_to_target_pos(self):
         """
         Move the robot to the target position.
 
-        If direct is true, the robot goes imideately to the destination. Otherwise he tries
-        to aggregate movements using a leaky bucket and an initial timeout.
+        Aggregate movements using a leaky bucket and an initial timeout.
         """
-        if direct:
-           await self._move_to_target_pos(False)
-        else:
-            async with self.rate_limit:
-                await asyncio.sleep(self.config.get("ur.movement_aggregator.initial_timeout"))
-                await self._move_to_target_pos(True)
+        async with self.rate_limit:
+            await asyncio.sleep(self.config.get("ur.movement_aggregator.initial_timeout"))
+            await self._move_to_target_pos()
 
-    async def step(self, kind, axis, direction):
+    async def step_axis(self, kind, axis, direction):
         """
         Move the motor at a reasonable speed into a direction.
         """
@@ -183,12 +203,27 @@ class Robot:
             raise TypeError("Direction must be a signed integer")
         
         normalized_direction = np.sign(direction)
-        step_size = self.axis_controller.get_step_size(kind, axis)
-        rel_step_goal = normalized_direction * step_size
+        step_acc = self.axis_controller.get_step_acc(kind, axis)
 
-        axis_pos = self.get_pos()[axis]
-        await self.set_target_pos(axis, axis_pos + rel_step_goal)
-        await self.move_to_target_pos(direct=True)
+        # TODO: rx, ry, rz don't work soley on their rotation axes, checkout 
+        # http://users.cecs.anu.edu.au/~roy/spatial/ for more information
+        sv = np.zeros(num_axes).astype(int)
+        sv[axis] = normalized_direction
+        self._speedl(sv, step_acc)
+
+    async def stop_axis(self, axis):
+        """
+        Stop the motor moving into a direction.
+        """
+        num_axes = await self.get_num_axes()
+        if not axis in range(0, num_axes):
+            raise Exception(f"No such axis {axis}")
+
+        sv = np.zeros(num_axes)
+        self._speedl(sv, 0.1)
+        pos = self.get_pos()
+        await self.set_target_pos(pos)
+
 
     async def stop(self, axis=None):
         if axis == None:
@@ -197,7 +232,7 @@ class Robot:
             raise TypeError("No such axis {axis}")
         else:
             pos = self.robot.get_pos()
-            await self.set_target_pos(axis, pos[axis])
+            await self.set_target_pos(pos[axis], axis)
             await self.move_to_target_pos()
 
     def set_freedrive(self, enabled=True):
