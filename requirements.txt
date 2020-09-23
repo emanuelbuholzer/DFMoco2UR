@@ -3,4 +3,5 @@ pyyaml
 urx == 0.11.0
 xdg
 numpy
-aiolimiter
+-e git+https://github.com/emanuelbuholzer/DFMoco2UR.git@680cb8903077497fc4b3cc1e18ec9e5a83306919#egg=aiolimiter&subdirectory=vendor/aiolimiter
+math3d

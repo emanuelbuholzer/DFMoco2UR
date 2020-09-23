@@ -29,11 +29,11 @@ class AxisController():
     def set_scale(self, scale):
         self.axis.set_scale(scale)
 
-    def get_step_size(self, kind, axis):
+    def get_step_acc(self, kind, axis):
         if kind == "inch":
-            return int(self.axis.get_inch_size()[axis])
+            return self.axis.get_inch_acc()[axis]
         elif kind == "jog":
-            return int(self.axis.get_jog_size()[axis])
+            return self.axis.get_jog_acc()[axis]
 
     def scale_pos(self, pos, origin):
         return self.axis.scale_pos(pos, origin)

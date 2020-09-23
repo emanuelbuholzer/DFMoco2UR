@@ -9,17 +9,17 @@ class XYZRxRyRzAxis():
         self.config = config
         self.num_axes = 6
         self.scale = self.config.get('ur.axes.xyzrxryrz.scale')
-        self.inch_size = self.config.get('ur.axes.xyzrxryrz.inch_size')
-        self.jog_size = self.config.get('ur.axes.xyzrxryrz.jog_size')
+        self.inch_acc = self.config.get('ur.axes.xyzrxryrz.inch_acc')
+        self.jog_acc = self.config.get('ur.axes.xyzrxryrz.jog_acc')
     
     def set_scale(self, scale):
         self.scale = scale
 
-    def get_inch_size(self):
-        return self.inch_size
+    def get_inch_acc(self):
+        return self.inch_acc
 
-    def get_jog_size(self):
-        return self.jog_size
+    def get_jog_acc(self):
+        return self.jog_acc
 
     def scale_pos(self, pos, origin):
         scaled_pos = np.multiply(np.array(pos), self.scale)

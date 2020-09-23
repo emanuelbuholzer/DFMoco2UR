@@ -8,19 +8,19 @@ defaults = {
         "tool_center_point": [0, 0, 0.1, 0, 0, 0],
         "weight": 2,
         "center_of_gravity": [0, 0.1, 0],
-        "acc": 0.1,
-        "vel": 0.05,
+        "acc": 0.02,
+        "vel": 0.1,
         "movement_aggregator": {
-            "initial_timeout": 2,
+            "initial_timeout": 3,
             "max_throughput": 1,
-            "interval": 3
+            "interval": 4
         },
         "axis": "xyzrxryrz",
         "axes": {
             "xyzrxryrz": {
                 "scale": [10000, 10000, 10000, 572.9577951308232, 572.9577951308232, 572.9577951308232],
-                "inch_size": [10, 10, 10, 10, 10, 10],
-                "jog_size": [250, 250, 250, 50, 50, 50]
+                "inch_acc": [0.005, 0.005, 0.005, 0.01, 0.01, 0.01],
+                "jog_acc": [0.01, 0.01, 0.01, 0.05, 0.05, 0.05]
             }
         }
     },
@@ -29,7 +29,7 @@ defaults = {
         "port":  "10001"
     },
     "logging": {
-        "dfmoco2ur": 20,
+        "dfmoco2ur": 30,
         "ursecmon": 40,
         "urx": 50
     },
