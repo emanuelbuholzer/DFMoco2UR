@@ -42,7 +42,7 @@ async def pos_heartbeat(handle, writer):
         for index, pos in enumerate(handle.robot.get_pos()):
             writer.write(bytes(f"mp {index + 1} {pos}\r\n", encoding='ascii'))
             await writer.drain()
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
 
 
 def get_messsage_handler(_, handle):

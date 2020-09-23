@@ -69,7 +69,7 @@ class Robot:
             self._origin = self.axis_controller.unscale_pos(pos, self._origin)
         else:
             async with self.lock:
-                self._origin = self._get_pos()
+                self._origin = np.zeros(6)
 
     async def set_origin_axis(self, axis, pos=None):
         """

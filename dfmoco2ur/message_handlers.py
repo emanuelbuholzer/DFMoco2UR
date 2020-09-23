@@ -127,10 +127,9 @@ async def set_motor_pulse_rate(handle, msg_args):
 async def zero_motor_pos(handle, msg_args):
     axis = int(msg_args[0])
     num_axes = await handle.robot.get_num_axes()
-    if axis in range(1, num_axes):
+    if axis in range(1, num_axes+1):
         axis -= 1
     else:
-        logger.error(f"No such axis ({axis})")
         return ""
 
     await handle.robot.set_origin_axis(axis)
