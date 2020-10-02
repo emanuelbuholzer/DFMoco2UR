@@ -2,11 +2,10 @@ import asyncio
 import logging
 import numpy as np
 from dfmoco2ur import __version__
-from aiolimiter import AsyncLimiter
 
 
 logger = logging.getLogger(__name__)
-init_limit = AsyncLimiter(1, 10)
+
 
 async def unsupported_operation(_handle, _msg_args):
     logger.info("Unsupported operation called")
@@ -16,11 +15,12 @@ async def unsupported_operation(_handle, _msg_args):
 async def init_robot(handle, _msg_args):
     await handle.dashboard.setup()
     await handle.robot.setup(handle.dashboard)
-    
+
     version = __version__
     major_version = __version__.split('.')[0]
     num_axes = await handle.robot.get_num_axes()
     return f"hi {major_version} {num_axes} {version}"
+
 
 async def are_motors_moving(handle, msg_args):
     return f"ms 000000"
@@ -122,7 +122,6 @@ async def inch_motor(handle, msg_args):
 
 
 async def set_motor_pulse_rate(handle, msg_args):
-    #logging.info(f"Tried setting pulse rate, currently not implemented")
     pass
 
 

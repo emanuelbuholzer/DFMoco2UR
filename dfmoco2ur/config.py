@@ -3,6 +3,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 defaults = {
+    "heartbeat": {
+        "interval": 2
+    },
     "ur": {
         "host": "192.168.5.42",
         "dashboard_port": 29999,
@@ -28,7 +31,11 @@ defaults = {
     },
     "df": {
         "host": "127.0.0.1",
-        "port":  "10001"
+        "port": 10001,
+    },
+    "api": {
+        "host": "127.0.0.1",
+        "port": 10002
     },
     "logging": {
         "dfmoco2ur": 30,
