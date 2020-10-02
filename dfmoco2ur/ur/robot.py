@@ -16,6 +16,7 @@ class Robot:
         self.lock = asyncio.Lock()
         self.logger = logging.getLogger(__name__)
         self.has_setup = False
+        self.is_moving = False
         # TODO: This is a FIXME in the original code.
         self.max_float_length = 6
 
@@ -200,6 +201,7 @@ class Robot:
 
         Aggregate movements using a leaky bucket and an initial timeout.
         """
+        self.is_moving = True
         async with self.rate_limit:
             try:
                 await asyncio.sleep(self.config.get("ur.movement_aggregator.initial_timeout"))
@@ -212,6 +214,7 @@ class Robot:
                 if within_limits:
                     await self.dashboard.unlock_protective_stop()
                     await self._move_to_target_pos()
+            self.is_moving = False
 
     async def step_axis(self, kind, axis, direction):
         """
@@ -253,10 +256,10 @@ class Robot:
         """
         self.robot.stop()
 
-    def set_freedrive(self, enabled=True):
-        if self._free_drive:
-            self.lock.acquire()
-            self.robot.set_freedrive(False, 60*60*24*7)
-        else:
+    async def set_freedrive(self, enabled=True):
+        if enabled:
+            await self.lock.acquire()
             self.robot.set_freedrive(True, 60*60*24*7)
+        else:
+            self.robot.set_freedrive(False, 60*60*24*7)
             self.lock.release()

@@ -1,12 +1,9 @@
 import logging
 import asyncio
+from dfmoco2ur.api.multiplexer import Multiplexer
 
 logger = logging.getLogger(__name__)
 
-async def print_handler(reader, writer):
-    while True:
-        data = await reader.readline()
-        logger.debug(f"Received message from API: {data}")
 
 class APIServer:
 
@@ -16,6 +13,8 @@ class APIServer:
     async def start(self):
         host = self.handle.config.get('api.host')
         port = self.handle.config.get('api.port')
-        server = await asyncio.start_server(print_handler, host, port)
+        mux = Multiplexer(self.handle)
+
+        server = await asyncio.start_server(mux.run, host, port)
         return server
         
