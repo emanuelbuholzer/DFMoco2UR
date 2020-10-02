@@ -14,7 +14,9 @@ async def unsupported_operation(_handle, _msg_args):
 
 
 async def init_robot(handle, _msg_args):
-    await handle.robot.setup()
+    await handle.dashboard.setup()
+    await handle.robot.setup(handle.dashboard)
+    
     version = __version__
     major_version = __version__.split('.')[0]
     num_axes = await handle.robot.get_num_axes()
@@ -77,7 +79,7 @@ async def stop_motor(handle, msg_args):
 
 
 async def stop_motors(handle, _):
-    #handle.robot.stop()
+    handle.robot.stop()
     return "sa"
 
 

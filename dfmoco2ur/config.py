@@ -5,6 +5,8 @@ logger = logging.getLogger(__name__)
 defaults = {
     "ur": {
         "host": "192.168.5.42",
+        "dashboard_port": 29999,
+        "max_unlock_attempts": 3,
         "tool_center_point": [0, 0, 0.1, 0, 0, 0],
         "weight": 2,
         "center_of_gravity": [0, 0.1, 0],

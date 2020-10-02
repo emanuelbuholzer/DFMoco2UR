@@ -16,6 +16,8 @@ class Robot:
         self.lock = asyncio.Lock()
         self.logger = logging.getLogger(__name__)
         self.has_setup = False
+        # TODO: This is a FIXME in the original code.
+        self.max_float_length = 6
 
     def _get_pos(self):
         return np.copy(np.array(self.robot.getl()))
@@ -30,14 +32,34 @@ class Robot:
         w = self.robot.csys.orient * m3d.Vector(velocities[3:])
         vels = np.concatenate((v.array, w.array))
 
-        # TODO: This is a FIXME in the original code.
-        max_float_length = 6
-        vels = [round(i, max_float_length, ) for i in velocities]
+        vels = [round(i, self.max_float_length) for i in velocities]
         vels.append(acc)
         prog = "speedl([{},{},{},{},{},{}], a={})".format(*vels)
         self.robot.send_program(prog)
 
-    async def setup(self):
+    async def _move_to_target_pos(self):
+        pos = None
+        await self.lock.acquire()
+        try:
+            pos = self.axis_controller.unscale_pos(self.target_pos, self._origin)
+        finally:
+            self.lock.release()
+            self.robot.movel(pos, self.acc, self.vel, wait=True)
+
+    async def _target_within_safety_limits(self):
+        async with self.lock:
+            pos = self.axis_controller.unscale_pos(self.target_pos, self._origin) 
+            pos_rounded = [round(p, self.max_float_length) for p in pos]
+
+            self.robot.set_digital_out(1, False)
+            await asyncio.sleep(0.1)
+
+            self.robot.send_program("def myProg():\n  global within_limits= is_within_safety_limits(p[{},{},{},{},{},{}])\n  set_digital_out(1,within_limits)\nend".format(*pos_rounded))
+            await asyncio.sleep(0.1)
+
+            return bool(self.robot.get_digital_out(1))
+
+    async def setup(self, dashboard):
         """
         Setup the robot. This method must run before everything else.
         """
@@ -53,6 +75,7 @@ class Robot:
         await self.set_vel(self.config.get("ur.vel"))
         self._free_drive = False
         self.rate_limit = AsyncLimiter(self.config.get("ur.movement_aggregator.max_throughput"), self.config.get("ur.movement_aggregator.interval"))
+        self.dashboard = dashboard
 
         await self.set_origin()
         async with self.lock:
@@ -170,15 +193,6 @@ class Robot:
             
             async with self.lock:
                 self.target_pos[axis] = target_pos
-    
-    async def _move_to_target_pos(self):
-        pos = None
-        await self.lock.acquire()
-        try:
-            pos = self.axis_controller.unscale_pos(self.target_pos, self._origin)
-        finally:
-            self.lock.release()
-            self.robot.movel(pos, self.acc, self.vel, wait=True)
 
     async def move_to_target_pos(self):
         """
@@ -187,8 +201,17 @@ class Robot:
         Aggregate movements using a leaky bucket and an initial timeout.
         """
         async with self.rate_limit:
-            await asyncio.sleep(self.config.get("ur.movement_aggregator.initial_timeout"))
-            await self._move_to_target_pos()
+            try:
+                await asyncio.sleep(self.config.get("ur.movement_aggregator.initial_timeout"))
+                within_limits = await self._target_within_safety_limits()
+                if within_limits:
+                    await self._move_to_target_pos()
+            except urx.urrobot.RobotException:
+                self.logger.error("Robot stopped, trying to unlock robot")
+                within_limits = await self._target_within_safety_limits()
+                if within_limits:
+                    await self.dashboard.unlock_protective_stop()
+                    await self._move_to_target_pos()
 
     async def step_axis(self, kind, axis, direction):
         """
@@ -201,7 +224,7 @@ class Robot:
             raise Exception(f"No such axis {axis}")
         if type(direction) != int:
             raise TypeError("Direction must be a signed integer")
-        
+
         normalized_direction = np.sign(direction)
         step_acc = self.axis_controller.get_step_acc(kind, axis)
 
@@ -224,16 +247,11 @@ class Robot:
         pos = self.get_pos()
         await self.set_target_pos(pos)
 
-
-    async def stop(self, axis=None):
-        if axis == None:
-            self.robot.stop()
-        elif not axis in range(0, self.get_num_axes()):
-            raise TypeError("No such axis {axis}")
-        else:
-            pos = self.robot.get_pos()
-            await self.set_target_pos(pos[axis], axis)
-            await self.move_to_target_pos()
+    def stop(self):
+        """
+        Stop the robot.
+        """
+        self.robot.stop()
 
     def set_freedrive(self, enabled=True):
         if self._free_drive:
@@ -242,6 +260,3 @@ class Robot:
         else:
             self.robot.set_freedrive(True, 60*60*24*7)
             self.lock.release()
-
-    def move_to_origin(self):
-        self.robot.movel(self._origin, wait=True)

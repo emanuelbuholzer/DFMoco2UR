@@ -4,8 +4,8 @@ from collections import namedtuple
 import urx
 
 from dfmoco2ur import message_handlers
-#from dfmoco2ur.robot import Robot
 from dfmoco2ur.ur.robot import Robot
+from dfmoco2ur.ur.dashboard import Dashboard
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +27,12 @@ _message_handlers = {
 
 
 def get_handle(config):
-    Handle = namedtuple('Handle', ['config', 'robot'])
+    Handle = namedtuple('Handle', ['config', 'robot', 'dashboard'])
 
     robot = Robot(config)
+    dashboard = Dashboard(config)
 
-    return Handle(config, robot)
+    return Handle(config, robot, dashboard)
 
 
 async def pos_heartbeat(handle, writer):
@@ -72,7 +73,8 @@ def get_messsage_handler(_, handle):
             except asyncio.IncompleteReadError:
                 continue
             except urx.urrobot.RobotException:
-                logger.error("Robot stopped")
+                logger.error("Robot stopped, trying to unlock robot")
+                yield from handle.dashboard.unlock_protective_stop()
                 continue
         yield from pos_heartbeat_task
     return handle_message
