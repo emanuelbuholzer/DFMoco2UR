@@ -48,7 +48,6 @@ class Multiplexer:
                 writer.write(bytes(msg, encoding='ascii'))
                 await writer.drain()
 
-            except asyncio.IncompleteReadError as err:
-                # Dragonframe is quite fault taulerant and can handle us not handling the error
-                self.logger.error(f"An incomplete read occured: {err}")
-                continue
+            except asyncio.IncompleteReadError:
+                self.logger.error(f"An incomplete read occured on the DFMocoServer, connection probably lost.")
+                break
