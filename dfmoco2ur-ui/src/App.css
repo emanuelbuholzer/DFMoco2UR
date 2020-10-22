@@ -1,0 +1,9 @@
+.App {
+  height: 100%;
+  width: 100%;
+}
+
+#AppBar {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
