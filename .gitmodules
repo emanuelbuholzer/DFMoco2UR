@@ -1,0 +1,3 @@
+[submodule "vendor/aiolimiter"]
+	path = vendor/aiolimiter
+	url = https://github.com/emanuelbuholzer/aiolimiter
