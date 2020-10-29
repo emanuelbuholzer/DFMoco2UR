@@ -30,7 +30,7 @@ function generate(element) {
   );
 }
 
-export default function InteractiveList() {
+export default function LoggerFilter() {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
   const [secondary, setSecondary] = React.useState(false);
@@ -81,26 +81,7 @@ export default function InteractiveList() {
           label="Debug"
         />
       </FormGroup>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" className={classes.title}>
-            Log Messages
-          </Typography>
-          <div className={classes.demo}>
-            <List dense={dense}>
-              {generate(
-                <ListItem>
-                  <ListItemText
-                    primary="Single-line item"
-                    secondary={secondary ? 'Secondary text' : null}
-                  />
-                </ListItem>,
-              )}
-            </List>
-          </div>
-      </Grid>
-       
-      </Grid>
+    
     </div>
   );
 }
