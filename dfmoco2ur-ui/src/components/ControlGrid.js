@@ -58,11 +58,8 @@ export default function ControlGrid() {
         <Grid item xs={3}>
           <Container className={classes.bottomSide}>left</Container>
         </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.bottomSide}>left</Container>
-        </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.bottomSide}>left</Container>
+        <Grid item xs={6}>
+          <Container className={classes.bottomSide}>Log viewer</Container>
         </Grid>
         <Grid item xs={3}>
           <Container className={classes.bottomSide}>left</Container>
