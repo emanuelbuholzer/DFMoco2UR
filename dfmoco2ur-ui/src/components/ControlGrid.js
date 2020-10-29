@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import ControlCanvas from "./ControlCanvas";
 import Button from '@material-ui/core/Button';
+import Logger from "./Logger";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,8 +60,11 @@ export default function ControlGrid() {
           <Container className={classes.bottomSide}>left</Container>
         </Grid>
         <Grid item xs={6}>
-          <Container className={classes.bottomSide}>Log viewer</Container>
+          <Container className={classes.bottomSide}>Logger
+            <Logger></Logger>
+          </Container>
         </Grid>
+ 
         <Grid item xs={3}>
           <Container className={classes.bottomSide}>left</Container>
         </Grid>
