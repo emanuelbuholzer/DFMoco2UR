@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import ControlCanvas from "./ControlCanvas";
 import Button from '@material-ui/core/Button';
-import LoggView from './LoggView';
+import LoggView from './LogView';
 
 const useStyles = makeStyles((theme) => ({
   root: {

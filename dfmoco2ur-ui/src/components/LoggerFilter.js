@@ -32,7 +32,7 @@ function generate(element) {
 
 export default function LoggerFilter() {
   const classes = useStyles();
-  const [dense, setDense] = React.useState(false);
+  const [activeFilters, setActiveFilters] = React.useState({Critical: true, Error: true, Warning: true, Info: false, Debug: false});
   const [secondary, setSecondary] = React.useState(false);
 
   return (
