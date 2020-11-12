@@ -5,7 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
@@ -32,7 +32,7 @@ function generate(element) {
 
 export default function LoggerFilter() {
   const classes = useStyles();
-  const [activeFilters, setActiveFilters] = React.useState({Critical: true, Error: true, Warning: true, Info: false, Debug: false});
+  const [activeFilters, setActiveFilter] = React.useState({critical: true, Error: true, Warning: true, Info: false, Debug: false});
   const [secondary, setSecondary] = React.useState(false);
 
   return (
@@ -40,43 +40,32 @@ export default function LoggerFilter() {
       <FormGroup row>
         <FormControlLabel
           control={
-            <Checkbox checked={dense} onChange={(event) => setDense(event.target.checked)} />
-          }
+            <Chip size="small" label="Basic" />          }
           label="Critical"
         />
         <FormControlLabel
           control={
-            <Checkbox
-              checked={secondary}
-              onChange={(event) => setSecondary(event.target.checked)}
-            />
+            <Chip size="small" label="Basic" />
           }
           label="Error"
         />
         <FormControlLabel
           control={
-            <Checkbox
-              checked={secondary}
-              onChange={(event) => setSecondary(event.target.checked)}
-            />
+            <Chip size="small" label="Basic" />
           }
           label="Warning"
         />
         <FormControlLabel
           control={
-            <Checkbox
-              checked={secondary}
-              onChange={(event) => setSecondary(event.target.checked)}
-            />
+            <Chip size="small" label="Basic" />
+
           }
           label="Info"
         />
         <FormControlLabel
           control={
-            <Checkbox
-              checked={secondary}
-              onChange={(event) => setSecondary(event.target.checked)}
-            />
+            <Chip size="small" label="Basic" />
+
           }
           label="Debug"
         />
