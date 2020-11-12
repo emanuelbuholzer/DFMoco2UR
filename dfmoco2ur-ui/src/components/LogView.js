@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import LoggerFilter from './LoggerFilter';
-import LoggerMessages from './LoggerMessages';
+import LogFilter from './LogFilter';
+import DataTable from './DataTable';
 
 
 
@@ -12,13 +12,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
   }}));
 
-  export default function Loggview(){
+  export default function Logview(){
     const classes = useStyles();
 
     return (
       <div classname = {classes.root}>
-          <LoggerFilter></LoggerFilter>
-          <LoggerMessages></LoggerMessages>
+          <LogFilter></LogFilter>
+          <DataTable></DataTable>
       </div>
     );
   }
