@@ -8,6 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import LoggEntry from './LoggEntry';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,19 +47,14 @@ export default function LoggerMessages() {
           <div className={classes.demo}>
               <table>
                   <tr>
-                      <th>Date</th>
-                      <th>Level</th>
-                      <th>Message</th>
+                      <th><LoggEntry level="Error" timestamp="xxxx" message="adddaaa"></LoggEntry></th>
+                      
                     </tr>
                     <tr>
-                        <td>heute</td>
-                        <td>critical</td>
-                        <td>we need coffee</td>
+                        <td><LoggEntry level="Warning" timestamp="xxxx" message="adddaaa"></LoggEntry></td>
                     </tr>
-                    <tr>
-                        <td>Morgen</td>
-                        <td>Info</td>
-                        <td>gratis Glühwein</td>
+                    <tr>  
+                        <td><LoggEntry level="Info" timestamp="xxxx" message="adddaaa"></LoggEntry></td>
                     </tr>
               </table>
       
