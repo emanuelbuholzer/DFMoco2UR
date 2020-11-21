@@ -60,7 +60,7 @@ export default function ControlGrid() {
           <Container className={classes.bottomSide}>left</Container>
         </Grid>
         <Grid item xs={6}>
-          <Container className={classes.bottomSide}>Logger
+          <Container className={classes.bottomSide}>
             <LogView></LogView>
           </Container>
         </Grid>
