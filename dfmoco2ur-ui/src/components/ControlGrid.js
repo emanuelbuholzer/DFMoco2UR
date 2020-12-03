@@ -6,6 +6,8 @@ import Container from "@material-ui/core/Container";
 import ControlCanvas from "./ControlCanvas";
 import Button from '@material-ui/core/Button';
 import LogView from './LogView';
+import {BasicTable} from './BasicTable'
+import { FilteringTable } from './FilteringTable'
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Chip from '@material-ui/core/Chip';
 import { DataGrid } from '@material-ui/data-grid';
+import Pagination from '@material-ui/lab/Pagination';
+import PaginationItem from '@material-ui/lab/PaginationItem';
+import PropTypes from 'prop-types'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -13,76 +16,53 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
-const columns = [
-  { field: 'dateTime', headerName: 'dateTime', type: 'date', width: 150 },
-  { field: 'severity', headerName: 'severity', width: 90 },
-  { field: 'message',  headerName: 'message', type: 'string', width: 300,  },
-  
-  /*  // getter method which would be nice, but adds an empty column to the grid, but also no clue tbh
-      { valueGetter: (params) =>
-      `${params.getValue('dateTime') || ''} 
-        ${params.getValue('severity') || ''
-      } ${params.getValue('message') || ''}`,
-  }, */
-];
-// data (logs) to be passed to the datatable, but how?..
+const sortModel =[{
+  field: 'dateTime',
+  sort: 'asc'
+}]
 
 const data = [
-  {id: 1, dateTime:"22.11.2019 14:00" , severity:"Critical" , message: "blabla"},
-  {id: 2, dateTime:"22.11.2019 14:00" , severity:"Critical" , message: "blabla"},
-  {id: 3, dateTime:"22.11.2019 14:00" , severity:"Critical" , message: "blabla"},
-  {id: 4, dateTime:"22.11.2019 14:00" , severity:"Critical" , message: "blabla"}];
+  { id: 1, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 2, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 3, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 4, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 5, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 6, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 7, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 8, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 9, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 10, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 11, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 12, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 13, dateTime: new Date('December 17, 2019 14:23:15'), severity: "Critical", message: "blabla" },
+  { id: 14, dateTime: new Date('December 17, 2019 14:22:15'), severity: "Critical", message: "blabla" }];
 
-  
+const time = {
+  type: 'date',
+  valueFormatter: ({ value }) => `${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`,
+  cellClassName: ''
+}
 
-const handleClick = () => {
-   let element = document.getElementById('chip')
-    element.style.backgroundColor = 'blue';
+const columns = [
+  { field: 'dateTime', headerName: 'Time', ...time},
+  { field: 'severity', headerName: 'Severity', sortable: false },
+  { field: 'message', headerName: 'Message', type: 'string', sortable: false }];
 
-  }
-  // TODO: actual filtering and coloring red green would be nice. 
-
-  //then filter foor severitys
-
-
-export default function Logview() {
+export default function Logview(props) {
   const classes = useStyles();
-
-
 
   return (
     <div className={classes.root}>
-      <FormControlLabel
-        control={
-          <Chip id='chip' label="Critical" size="medium"  message="message" onClick={handleClick} />
-        }
-      />
-      <FormControlLabel
-        control={
-          <Chip size="medium" label="Error" onClick={handleClick} />
-        }
-      />
-      <FormControlLabel
-        control={
-          <Chip size="medium" label="Warning" onClick={handleClick} />
-        }
-      />
-      <FormControlLabel
-        control={
-          <Chip size="medium" label="Info" onClick={handleClick} />
-        }
-      />
-      <FormControlLabel
-        control={
-          <Chip size="medium" label="Debug" onClick={handleClick} />
-        }
-      />
-
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid rows={data} columns={columns} pageSize={10} />
-    </div>
-  );    
+      <div style={{ height: 400 }}>
+        <DataGrid 
+        rows={data} 
+        columns={columns} 
+        pageSize={100} 
+        sortModel={sortModel}
+        autoHeight={false} 
+        hideFooterPagination={true}>
+        </DataGrid>
+      </div>
   </div>
   );
 }
