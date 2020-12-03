@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 
 export default function ControlPage() {
+    // TODO: Put button in the top right corner, red?
     return (
         <Container>
             <Typography variant="h3">
