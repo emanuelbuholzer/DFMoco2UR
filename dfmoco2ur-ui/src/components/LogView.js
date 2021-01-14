@@ -2,8 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
 
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '62vh'
@@ -16,7 +14,7 @@ const sortModel =[{
 }]
 
 const data = [
-  { id: 1, dateTime: new Date(), severity: "Critical", message: "blabla" },
+  { id: 1, dateTime: new Date(), severity: "Critical", message: "Hallo" },
   { id: 2, dateTime: new Date(), severity: "Critical", message: "blabla" },
   { id: 3, dateTime: new Date(), severity: "Critical", message: "blabla" },
   { id: 4, dateTime: new Date(), severity: "Critical", message: "blabla" },

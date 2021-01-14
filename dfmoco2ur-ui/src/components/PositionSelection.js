@@ -17,9 +17,9 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         '& > *': {
-          margin: theme.spacing(1),
+            margin: theme.spacing(1),
         },
-      },
+    },
 }));
 
 export default function SimpleList() {
@@ -27,27 +27,25 @@ export default function SimpleList() {
 
     return (
         <div>
-        <div className={classes.buttonGroopRoot}>
+            <div className={classes.buttonGroopRoot}>
                 <ButtonGroup variant="contained" color="primary" fullWidth={true}>
                     <Button>Save</Button>
                     <Button>Goto</Button>
                     <Button>Delete</Button>
-                    <Button color="secondary">Enable Freedrive</Button>
-                    <Button color="secondary">Unlock Robot</Button>
+                    <Button color="secondary">Freedrive</Button>
+                    <Button color="secondary">Unlock</Button>
                 </ButtonGroup>
             </div>
-        <div className={classes.root}>
-            <List>
-                <ListItem button>
-                    <ListItemText primary="Trash" />
-                </ListItem>
-                <ListItem button>
-                    <ListItemText primary="Spam" />
-                </ListItem>
-            </List>
-            
-
-        </div>
+            <div className={classes.root}>
+                <List>
+                    <ListItem button>
+                        <ListItemText primary="Position1" />
+                    </ListItem>
+                    <ListItem button>
+                        <ListItemText primary="Position 3" />
+                    </ListItem>
+                </List>
+            </div>
         </div>
     );
 }
