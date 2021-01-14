@@ -1,6 +1,5 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import CustomizedTimeline from './CustomizedTimeline';
 import { Typography } from '@material-ui/core';
 import VerticalLinearStepper from './VerticalLineStepper';
 

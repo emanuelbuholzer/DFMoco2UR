@@ -2,9 +2,9 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import Container from "@material-ui/core/Container";
-import ControlCanvas from "./ControlCanvas";
-import Button from '@material-ui/core/Button';
+import PositionSelection from "./PositionSelection";
+import LogView from './LogView';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,35 +38,15 @@ export default function ControlGrid() {
   return (
     <div className={classes.root}>
       <Grid container justify="space-around" alignItems="stretch" spacing={3}>
-        <Grid item xs={3}>
-          <Container className={classes.canvasSide}>
-            left
-          </Container>
+        <Grid item xs={12}>
+          <LogView></LogView>
         </Grid>
-        <Grid item xs={6}>
-          <Paper className={classes.canvas}>
-            <ControlCanvas></ControlCanvas>
+        <Grid item xs={12}>
+          <Paper>
+            <PositionSelection></PositionSelection>
           </Paper>
         </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.canvasSide}>
-            <Button variant="contained" size="large">
-              
-            </Button>
-          </Container>
-        </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.bottomSide}>left</Container>
-        </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.bottomSide}>left</Container>
-        </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.bottomSide}>left</Container>
-        </Grid>
-        <Grid item xs={3}>
-          <Container className={classes.bottomSide}>left</Container>
-        </Grid>
+        
       </Grid>
     </div>
   );

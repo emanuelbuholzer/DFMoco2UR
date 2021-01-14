@@ -1,3 +1,6 @@
+dfmoco2ur-ui/node_modules
+dfmoco2ur-ui/.yarn
+dfmoco2ur-ui/.pnp.js
 
 # Created by https://www.toptal.com/developers/gitignore/api/vim,intellij,intellij+iml,intellij+all,python,virtualenv,code
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,intellij,intellij+iml,intellij+all,python,virtualenv,code
