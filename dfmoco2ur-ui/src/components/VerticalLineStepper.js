@@ -9,7 +9,6 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import LoadingMotion from "./LoadingMotion";
 import { Link } from "react-router-dom";
-import InputIcon from "@material-ui/icons/Input";
 
 const useStyles = makeStyles((theme) => ({
   root: {
