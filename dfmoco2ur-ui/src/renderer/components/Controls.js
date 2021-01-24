@@ -5,6 +5,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import { connect } from 'react-redux';
+import { socketMessageEnableFreedrive, socketMessageUnlock } from '../services/socket/actions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,9 +24,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SimpleList() {
+function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreedrive, socketMessageUnlock }) {
     const classes = useStyles();
-
+    console.log("Freedrive: " + freedriveEnabled);
+    console.log("Recently Unlocked: " + recentlyUnlocked)
     return (
         <div>
             <div className={classes.buttonGroopRoot}>
@@ -32,8 +35,8 @@ export default function SimpleList() {
                     <Button>Save</Button>
                     <Button>Goto</Button>
                     <Button>Delete</Button>
-                    <Button color="secondary">Freedrive</Button>
-                    <Button color="secondary">Unlock</Button>
+                    <Button color="secondary" onClick={socketMessageEnableFreedrive}>Freedrive</Button>
+                    <Button color="secondary" onClick={socketMessageUnlock}>Unlock</Button>
                 </ButtonGroup>
             </div>
             <div className={classes.root}>
@@ -49,3 +52,14 @@ export default function SimpleList() {
         </div>
     );
 }
+
+const mapStateToProps = (state) => {
+    return {
+      freedriveEnabled: state.socket.freedrive.enabled,
+      recentlyUnlocked: state.socket.recentlyUnlocked
+    }
+}
+
+const mapDispatchToProps = { socketMessageEnableFreedrive, socketMessageUnlock }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Controls);

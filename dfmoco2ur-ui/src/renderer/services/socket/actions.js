@@ -2,59 +2,79 @@ export const SOCKET_CONNECTION_INIT = 'SOCKET_CONNECTION_INIT';
 export const SOCKET_CONNECTION_SUCCESS = 'SOCKET_CONNECTION_SUCCESS';
 export const SOCKET_CONNECTION_ERROR = 'SOCKET_CONNECTION_ERROR';
 export const SOCKET_CONNECTION_CLOSED = 'SOCKET_CONNECTION_CLOSED';
-export const SOCKET_MESSAGE = 'SOCKET_MESSAGE';
 
 export function initializeSocket() {
-    return (dispatch) => {
-      const socket = new WebSocket('ws://localhost:8080');
-      dispatch(socketConnectionInit(socket));
-  
-      socket.onopen = function() {
-        dispatch(socketConnectionSuccess());  
-      };
-      
-      socket.onerror = function() {
-        dispatch(socketConnectionError());  
-      };
-  
-      socket.onmessage = function (event) {
-        dispatch(socketMessage(event.data));
-      };
-  
-      socket.onclose = function() {
-        dispatch(socketConnectionClosed());
-      };
+  return (dispatch) => {
+    const socket = new WebSocket('ws://localhost:8080');
+    dispatch(socketConnectionInit(socket));
+
+    socket.onopen = function () {
+      dispatch(socketConnectionSuccess());
     };
-  }
+
+    socket.onerror = function () {
+      dispatch(socketConnectionError());
+    };
+
+    socket.onmessage = function (event) {
+      dispatch(socketMessage(event.data));
+    };
+
+    socket.onclose = function () {
+      dispatch(socketConnectionClosed());
+    };
+  };
+}
 
 function socketConnectionInit(socket) {
-    return {
-      type: SOCKET_CONNECTION_INIT,
-      socket,
-    };
+  return {
+    type: SOCKET_CONNECTION_INIT,
+    socket,
+  };
+}
+
+function socketConnectionSuccess() {
+  return {
+    type: SOCKET_CONNECTION_SUCCESS,
+  };
+}
+
+function socketConnectionError() {
+  return {
+    type: SOCKET_CONNECTION_ERROR,
+  };
+}
+
+function socketConnectionClosed() {
+  return {
+    type: SOCKET_CONNECTION_CLOSED,
+  };
+}
+
+function socketMessage(data) {
+  return JSON.parse(data);
+}
+
+export function socketMessageEnableFreedrive() {
+  return {
+    type: 'SOCKET_MESSAGE_FREEDRIVE_REQUEST_ENABLE'
   }
-  
-  function socketConnectionSuccess() {
-    return {
-      type: SOCKET_CONNECTION_SUCCESS,
-    };
+}
+
+export function socketMessageDisableFreedrive() {
+  return {
+    type: 'SOCKET_MESSAGE_FREEDRIVE_REQUEST_DISABLE'
   }
-  
-  function socketConnectionError() {
-    return {
-      type: SOCKET_CONNECTION_ERROR,
-    };
+}
+
+export function socketMessageUnlock() {
+  return {
+    type: 'SOCKET_MESSAGE_UNLOCK_REQUEST'
   }
-  
-  function socketConnectionClosed() {
-    return {
-      type: SOCKET_CONNECTION_CLOSED,
-    };
+}
+
+export function resetRecentUnlockView() {
+  return {
+    type: 'RESET_RECENT_UNLOCK'
   }
-  
-  function socketMessage(data) {
-    return {
-      type: SOCKET_MESSAGE,
-      data,
-    };
-  }
+}

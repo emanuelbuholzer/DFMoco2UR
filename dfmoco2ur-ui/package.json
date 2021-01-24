@@ -17,6 +17,7 @@
     "fiber": "^1.0.4",
     "fontsource-roboto": "^3.0.3",
     "framer-motion": "^2.8.0",
+    "moment": "^2.29.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-markdown": "^4.3.1",
