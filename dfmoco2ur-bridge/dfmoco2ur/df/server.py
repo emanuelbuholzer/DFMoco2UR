@@ -9,7 +9,7 @@ class DFMocoServer:
         self.logger = logging.getLogger(__name__)
         self.handle = handle
 
-    async def run(self):
+    async def start(self):
         host = self.handle.config.get('df.host')
         port = self.handle.config.get('df.port')
         mux = Multiplexer(self.handle)
@@ -17,4 +17,4 @@ class DFMocoServer:
         server = await asyncio.start_server(mux.run, host, port)
         addr = server.sockets[0].getsockname()
         self.logger.info(f"Serving the DFMoco Server on {addr}")
-        await server.serve_forever()
+        return server

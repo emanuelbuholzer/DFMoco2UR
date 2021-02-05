@@ -1,6 +1,7 @@
 import logging
 import asyncio
 from dfmoco2ur.api.multiplexer import Multiplexer
+import websockets
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,7 @@ class APIServer:
         port = self.handle.config.get('api.port')
         mux = Multiplexer(self.handle)
 
-        server = await asyncio.start_server(mux.run, host, port)
-        return server
+        start_server = websockets.serve(mux.run, host, port)
+
+        return start_server
         

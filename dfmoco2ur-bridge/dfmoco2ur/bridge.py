@@ -5,28 +5,29 @@ from dfmoco2ur.ur.robot import Robot
 from dfmoco2ur.ur.dashboard import Dashboard
 from dfmoco2ur.df.server import DFMocoServer
 from dfmoco2ur.api.server import APIServer
+from dfmoco2ur.userlog import Logger
 
 logger = logging.getLogger(__name__)
 
 
 def get_handle(config):
-    Handle = namedtuple('Handle', ['config', 'robot', 'dashboard'])
+    Handle = namedtuple('Handle', ['config', 'robot', 'dashboard', 'userlog'])
 
     robot = Robot(config)
     dashboard = Dashboard(config)
+    userlog = Logger(config)
 
-    return Handle(config, robot, dashboard)
+    return Handle(config, robot, dashboard, userlog)
 
 
 async def run(config):
     handle = get_handle(config)
 
-    dfmoco_server = DFMocoServer(handle)
-
     api_server = await APIServer(handle).start()
-    api_addr = api_server.sockets[0].getsockname()
-    logger.info(f"Serving the DFMoco2UR API on {api_addr}")
-
-    async with api_server:
-        asyncio.ensure_future(dfmoco_server.run())
-        await api_server.serve_forever() 
+    dfmoco_server = await DFMocoServer(handle).start()
+    async with dfmoco_server:
+        host = handle.config.get('api.host')
+        port = handle.config.get('api.port')
+        logger.info(f"Serving the DFMoco2UR Websocket API on ws://{host}:{port}")
+        asyncio.ensure_future(api_server)
+        await dfmoco_server.serve_forever()
