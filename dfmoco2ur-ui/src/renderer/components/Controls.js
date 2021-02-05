@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { connect } from 'react-redux';
-import { socketMessageEnableFreedrive, socketMessageUnlock } from '../services/socket/actions';
+import { socketMessageEnableFreedrive, socketMessageUnlock, savePosition, goToPosition, deletePosition } from '../services/socket/actions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreedrive, socketMessageUnlock }) {
+function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreedrive, socketMessageUnlock, savePosition, goToPosition, deletePosition }) {
     const classes = useStyles();
     console.log("Freedrive: " + freedriveEnabled);
     console.log("Recently Unlocked: " + recentlyUnlocked)
@@ -32,9 +32,10 @@ function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreed
         <div>
             <div className={classes.buttonGroopRoot}>
                 <ButtonGroup variant="contained" color="primary" fullWidth={true}>
-                    <Button>Save</Button>
-                    <Button>Goto</Button>
-                    <Button>Delete</Button>
+                
+                    <Button onClick={savePosition}>Save</Button>
+                    <Button onClick={goToPosition}>Goto</Button>
+                    <Button onClick={deletePosition}>Delete</Button>
                     <Button color="secondary" onClick={socketMessageEnableFreedrive}>Freedrive</Button>
                     <Button color="secondary" onClick={socketMessageUnlock}>Unlock</Button>
                 </ButtonGroup>
@@ -56,10 +57,11 @@ function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreed
 const mapStateToProps = (state) => {
     return {
       freedriveEnabled: state.socket.freedrive.enabled,
-      recentlyUnlocked: state.socket.recentlyUnlocked
+      recentlyUnlocked: state.socket.recentlyUnlocked,
+      updatedPosition: state.socket.List
     }
 }
 
-const mapDispatchToProps = { socketMessageEnableFreedrive, socketMessageUnlock }
+const mapDispatchToProps = { socketMessageEnableFreedrive, socketMessageUnlock, savePosition, goToPosition, deletePosition }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Controls);

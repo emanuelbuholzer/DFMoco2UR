@@ -5,7 +5,7 @@ export const SOCKET_CONNECTION_CLOSED = 'SOCKET_CONNECTION_CLOSED';
 
 export function initializeSocket() {
   return (dispatch) => {
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('ws://localhost:10002');
     dispatch(socketConnectionInit(socket));
 
     socket.onopen = function () {
@@ -78,3 +78,31 @@ export function resetRecentUnlockView() {
     type: 'RESET_RECENT_UNLOCK'
   }
 }
+
+// we need more functions, namely "Safe", "Delete" and "GoTo"
+
+export function savePosition(){
+  return {
+    type: 'SAVE_POSITION_REQUEST'
+    
+  }
+}
+
+export function goToPosition(){
+  return {
+    type: 'GO_TO_POSITION_REQUEST'
+  }
+}
+
+export function deletePosition(){
+  return {
+    type: 'DELETE_POSITION_REQUEST'
+  }
+}
+
+export function selectPosition(){
+  return{
+    type: 'SELECT_POSITION'
+  }
+} // not sure if needed
+
