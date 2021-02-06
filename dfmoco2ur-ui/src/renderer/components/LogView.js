@@ -21,8 +21,9 @@ const time = {
 }
 
 const columns = [
-  { field: 'time', headerName: 'Time', ...time, flex: 0.2, headerClassName: 'log-column-header', headerAlign: 'center' },
+  // TODO: Style text according to its severity
   { field: 'severity', headerName: 'Severity', sortable: false, flex: 0.2, headerClassName: 'log-column-header', headerAlign: 'center' },
+  { field: 'time', headerName: 'Time', ...time, flex: 0.2, headerClassName: 'log-column-header', headerAlign: 'center' },
   // TODO: Set width after getting the longest message (by hand)
   { field: 'message', headerName: 'Message', type: 'string', sortable: false, flex: 1, headerClassName: 'log-column-header', headerAlign: 'center' }];
 

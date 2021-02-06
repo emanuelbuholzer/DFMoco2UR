@@ -5,8 +5,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { connect } from 'react-redux';
-import { socketMessageEnableFreedrive, socketMessageUnlock } from '../services/socket/actions';
+import UnlockRobot from './UnlockRobotButton'
+import FreedriveDialog from './FreedriveDialogButton';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,10 +25,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreedrive, socketMessageUnlock }) {
+export default function Controls() {
     const classes = useStyles();
-    console.log("Freedrive: " + freedriveEnabled);
-    console.log("Recently Unlocked: " + recentlyUnlocked)
+
     return (
         <div>
             <div className={classes.buttonGroopRoot}>
@@ -35,8 +35,9 @@ function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreed
                     <Button>Save</Button>
                     <Button>Goto</Button>
                     <Button>Delete</Button>
-                    <Button color="secondary" onClick={socketMessageEnableFreedrive}>Freedrive</Button>
-                    <Button color="secondary" onClick={socketMessageUnlock}>Unlock</Button>
+                    <FreedriveDialog></FreedriveDialog>
+                    <UnlockRobot></UnlockRobot>
+
                 </ButtonGroup>
             </div>
             <div className={classes.root}>
@@ -52,14 +53,3 @@ function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreed
         </div>
     );
 }
-
-const mapStateToProps = (state) => {
-    return {
-      freedriveEnabled: state.socket.freedrive.enabled,
-      recentlyUnlocked: state.socket.recentlyUnlocked
-    }
-}
-
-const mapDispatchToProps = { socketMessageEnableFreedrive, socketMessageUnlock }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Controls);

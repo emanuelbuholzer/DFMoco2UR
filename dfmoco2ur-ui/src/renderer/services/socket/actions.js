@@ -73,7 +73,7 @@ export function socketMessageUnlock() {
   }
 }
 
-export function resetRecentUnlockView() {
+export function resetRecentUnlockInView() {
   return {
     type: 'RESET_RECENT_UNLOCK'
   }

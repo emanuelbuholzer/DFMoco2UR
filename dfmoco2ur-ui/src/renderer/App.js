@@ -13,7 +13,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import DenseAppBar from "./components/DenseAppBar";
 import StartupPage from "./components/StartupPage";
 import ControlPage from "./components/ControlPage";
-import ManualPage from "./components/ManualPage";
 
 class App extends React.Component {
   componentWillMount() {
@@ -35,15 +34,12 @@ class App extends React.Component {
             <Route path="/control">
               <ControlPage></ControlPage>
             </Route>
-            <Route path="/manual">
-              <ManualPage></ManualPage>
-            </Route>
             <Route path="/shutdown">
               <p>Shutdown</p>
             </Route>
 
             <Route path="/">
-              <Redirect to="/startup"></Redirect>
+              <Redirect to="/control"></Redirect>
             </Route>
           </Switch>
         </Router>
