@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { connect } from 'react-redux';
 import { socketMessageEnableFreedrive, socketMessageUnlock, savePosition, goToPosition, deletePosition } from '../services/socket/actions';
+import SavePosition from './SavePosition'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,15 +25,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 function Controls({ freedriveEnabled, recentlyUnlocked, socketMessageEnableFreedrive, socketMessageUnlock, savePosition, goToPosition, deletePosition }) {
     const classes = useStyles();
+    const positionSaved = false; 
+
     console.log("Freedrive: " + freedriveEnabled);
     console.log("Recently Unlocked: " + recentlyUnlocked)
     return (
         <div>
             <div className={classes.buttonGroopRoot}>
                 <ButtonGroup variant="contained" color="primary" fullWidth={true}>
-                
+                    <SavePosition></SavePosition>
                     <Button onClick={savePosition}>Save</Button>
                     <Button onClick={goToPosition}>Goto</Button>
                     <Button onClick={deletePosition}>Delete</Button>
@@ -58,7 +62,7 @@ const mapStateToProps = (state) => {
     return {
       freedriveEnabled: state.socket.freedrive.enabled,
       recentlyUnlocked: state.socket.recentlyUnlocked,
-      updatedPosition: state.socket.List
+      posotionSaved: state.socket.positionSaved
     }
 }
 

@@ -83,9 +83,10 @@ export function resetRecentUnlockView() {
 
 export function savePosition(){
   return {
-    type: 'SAVE_POSITION_REQUEST'
-    
+    type: 'SAVE_POSITION_REQUEST',
+
   }
+  
 }
 
 export function goToPosition(){

@@ -10,9 +10,10 @@ const initialState = {
     timeout: null
   },
   recentlyUnlocked: false, 
-  positionIndex: [],
-  selectedPosition: null,
-  currentSetting: 'hello my friend'
+  position: [],
+  positionIndex: null,
+  positionSaved: false
+
    // we wannna track the position selected
                         // and prolly also the current state = settings?
 };
@@ -73,14 +74,21 @@ export default function reducer(state = initialState, action = {}) {
         recentlyUnlocked: false,
       });
 
+      // so we send a request 
+      //with the request we need to send the "position"
     case "SAVE_POSITION_REQUEST":
       state.socket.send(JSON.stringify({type: "SAVE_POSITION_REQUEST"}));
       return state;
-        // not sure here what to pass here
 
     case "SAVE_POSITION_RESPONSE":
-      state.socket.send({type:"SAVE_POSITION_RESPONSE"});
-      return state;
+      return Object.assign({}, state, {
+          positionSaved: state.socket.positionSaved, 
+          position: state.socket.position
+          // this prolly wrong
+          // we should receive a state which tells us
+          // if position was saved --> snackbar success | failure
+          // still not sure were the position is added
+         });
 
     case "GO_TO_POSITION_REQUEST":
       state.socket.send(JSON.stringify({type: "GO_TO_POSITION_REQUEST"}));
