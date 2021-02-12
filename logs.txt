@@ -1,0 +1,9 @@
+(01/24/2021 @ 12:46pm (UTC))
+{
+    "type": "SOCKET_MESSAGE_LOG",
+    "payload": {
+        "timestamp": 1611492393,
+        "severity": "ERROR",
+        "message": "Hallo ich bin eine Nachricht."
+    }
+}
