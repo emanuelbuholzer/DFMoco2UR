@@ -15,7 +15,15 @@ mock_responses = {
         },
     "SOCKET_MESSAGE_UNLOCK_REQUEST": {
             "type": "SOCKET_MESSAGE_UNLOCK_RESPONSE"
-        }
+        },
+
+    "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE": {
+            "type": "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE",
+           
+        },
+    "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE": {
+            "type": "SOCKET_MESSAGE_SAVE_RESPONSE_DISABLE" 
+        },
     }
 
 

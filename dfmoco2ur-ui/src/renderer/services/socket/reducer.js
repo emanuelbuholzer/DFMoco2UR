@@ -7,9 +7,13 @@ const initialState = {
     logs: [],
     freedrive: {
       enabled: false,
-      timeout: null
+      timeout: null, 
     },
-    recentlyUnlocked: false
+    recentlyUnlocked: false,
+    save: {
+      enabled: false, 
+      posName: null, 
+    }
   };
 
 export default function reducer(state = initialState, action = {}) {
@@ -51,6 +55,29 @@ export default function reducer(state = initialState, action = {}) {
           freedrive: {
             enabled: false,
             timeout: null
+          }
+        });
+
+        case "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE": 
+        state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE"}));
+        return state;
+
+      case "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE": 
+        return Object.assign({}, state, {
+          save: {
+            enabled: true,
+          }
+        });
+
+      case "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE": 
+        state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE"}));
+        return state;
+
+      case "SOCKET_MESSAGE_SAVE_RESPONSE_DISABLE": 
+        return Object.assign({}, state, {
+          save: {
+            enabled: false,
+            posName: null,
           }
         });
       

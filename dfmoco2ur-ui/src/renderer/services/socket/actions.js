@@ -5,7 +5,7 @@ export const SOCKET_CONNECTION_CLOSED = 'SOCKET_CONNECTION_CLOSED';
 
 export function initializeSocket() {
   return (dispatch) => {
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('ws://localhost:10002');
     dispatch(socketConnectionInit(socket));
 
     socket.onopen = function () {
@@ -66,6 +66,20 @@ export function socketMessageDisableFreedrive() {
     type: 'SOCKET_MESSAGE_FREEDRIVE_REQUEST_DISABLE'
   }
 }
+
+export function socketMessageEnableSave() {
+  return {
+    type: 'SOCKET_MESSAGE_SAVE_REQUEST_ENABLE'
+  }
+}
+
+export function socketMessageDisableSave() {
+  return {
+    type: 'SOCKET_MESSAGE_SAVE_REQUEST_DISABLE'
+  }
+}
+
+
 
 export function socketMessageUnlock() {
   return {
