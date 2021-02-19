@@ -34,7 +34,7 @@ function SaveDialogButton({ saveEnabled, posName, socketMessageEnableSave, socke
           <DialogContentText id="alert-dialog-description">
               <form>
                   <label>
-                    <input type="text" onChange={e => posName.setState({posName: e.target.value})}></input> 
+                    <input type="text" onChange={e => set({posName: e.target.value})}></input> 
                   </label>
                     
               </form>
