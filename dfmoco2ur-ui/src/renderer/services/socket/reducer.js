@@ -71,7 +71,11 @@ export default function reducer(state = initialState, action = {}) {
 
       case "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE": 
         state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE"}));
-        return state;
+        return state, {
+          save: {
+            posName: action.payload.posName,
+          }
+        };
 
       case "SOCKET_MESSAGE_SAVE_RESPONSE_DISABLE": 
         return Object.assign({}, state, {
