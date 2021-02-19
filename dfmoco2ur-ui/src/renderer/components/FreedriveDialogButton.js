@@ -32,7 +32,7 @@ function FreedriveDialogButton({ freedriveEnabled, freedriveTimeout, socketMessa
         <DialogTitle id="alert-dialog-title">{"Freedrive"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Freedrive is running now+{freedriveTimeout} or until you disable the freedrive manually.
+            Freedrive is running now for {freedriveTimeout} seconds or until you disable the freedrive manually.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

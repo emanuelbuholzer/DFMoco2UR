@@ -43,6 +43,15 @@ export default function Controls() {
             </div>
             <div className={classes.root}>
                 <List>
+                    {
+                        /*
+                            positionNames.forEach((positionName, i) => 
+                                (
+                                    <ListItemText primary={positionName} color={i==selectedIndex ? red : green} />
+                                )
+                            })
+                        */
+                    }
                     <ListItem button>
                         <ListItemText primary="Position1" />
                     </ListItem>

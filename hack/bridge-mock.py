@@ -17,12 +17,15 @@ mock_responses = {
             "type": "SOCKET_MESSAGE_UNLOCK_RESPONSE"
         },
 
-    "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE": {
-            "type": "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE",
+    "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG": {
+            "type": "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE_DIALOG",
            
         },
-    "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE": {
-            "type": "SOCKET_MESSAGE_SAVE_RESPONSE_DISABLE" 
+    "SOCKET_MESSAGE_SAVE_REQUEST": {
+            "type": "SOCKET_MESSAGE_SAVE_RESPONSE",
+            "payload": {
+                "positionName": "peter", 
+            } 
         },
     }
 
