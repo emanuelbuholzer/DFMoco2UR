@@ -67,18 +67,23 @@ export function socketMessageDisableFreedrive() {
   }
 }
 
-export function socketMessageEnableSave() {
+export function socketMessageEnableSaveDialog() {
   return {
-    type: 'SOCKET_MESSAGE_SAVE_REQUEST_ENABLE'
+    type: 'SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG'
+
   }
 }
 
-export function socketMessageDisableSave() {
+export function socketMessageSavePosition(posName) {
   return {
-    type: 'SOCKET_MESSAGE_SAVE_REQUEST_DISABLE'
+    type: 'SOCKET_MESSAGE_SAVE_REQUEST',
+    payload: {
+      save: {
+        posName: posName
+      }
+    }
   }
 }
-
 
 
 export function socketMessageUnlock() {

@@ -5,16 +5,18 @@ const initialState = {
     connected: false,
     socket: null,
     logs: [],
+    positionNames: [],
+    currentPositionIndex: null,  
+
     freedrive: {
       enabled: false,
       timeout: null, 
     },
     recentlyUnlocked: false,
-    save: {
-      enabled: false, 
-      posName: null, 
-    }
+    saveEnabled: false, 
+    
   };
+ 
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
@@ -58,32 +60,33 @@ export default function reducer(state = initialState, action = {}) {
           }
         });
 
-        case "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE": 
-        state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE"}));
+      case "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG": 
+        state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG"}));
         return state;
 
-      case "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE": 
+      case "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE_DIALOG": 
         return Object.assign({}, state, {
-          save: {
-            enabled: true,
-          }
+          
+            saveEnabled: true,
         });
 
-      case "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE": 
-        state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST_DISABLE"}));
-        return state, {
-          save: {
-            posName: action.payload.posName,
-          }
-        };
-
-      case "SOCKET_MESSAGE_SAVE_RESPONSE_DISABLE": 
+      case "SOCKET_MESSAGE_SAVE_REQUEST": 
+        state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_SAVE_REQUEST"}));
         return Object.assign({}, state, {
-          save: {
-            enabled: false,
-            posName: null,
-          }
+          
+            saveEnabled: false,
+            positionName: action.payload.positionName
+          
         });
+
+      case "SOCKET_MESSAGE_SAVE_RESPONSE": 
+        console.log(action.payload.positionName)
+        return Object.assign({}, state, {
+            saveEnabled: false,
+            positionNames: state.positionNames.concat([action.payload.positionName])
+          
+        });
+        
       
       case "SOCKET_MESSAGE_UNLOCK_REQUEST":
         state.socket.send(JSON.stringify({type: "SOCKET_MESSAGE_UNLOCK_REQUEST"}));
