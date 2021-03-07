@@ -22,7 +22,7 @@ function SaveDialogButton({ saveEnabled, socketMessageSavePosition, socketMessag
 
   return (
     <span>
-      <Button variant="contained" color="Primary" className={classes.button} onClick={socketMessageEnableSaveDialog}>
+      <Button variant="contained" color="primary" className={classes.button} onClick={socketMessageEnableSaveDialog}>
         Save
       </Button>
 

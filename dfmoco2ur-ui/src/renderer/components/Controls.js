@@ -8,7 +8,9 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UnlockRobot from './UnlockRobotButton'
 import FreedriveDialog from './FreedriveDialogButton';
 import SavePosition from './SavePosition';
-
+import PositionList from './PositionList';
+import DeleteButton from './DeleteButton';
+import GoToButton from './GoToButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -34,32 +36,14 @@ export default function Controls() {
             <div className={classes.buttonGroopRoot}>
                 <ButtonGroup variant="contained" color="primary" fullWidth={true}>
                     <SavePosition></SavePosition>
-                    <Button>Goto</Button>
-                    <Button>Delete</Button>
+                    <GoToButton></GoToButton>
+                    <DeleteButton></DeleteButton>
                     <FreedriveDialog></FreedriveDialog>
                     <UnlockRobot></UnlockRobot>
 
                 </ButtonGroup>
             </div>
-            <div className={classes.root}>
-                <List>
-                    {
-                        /*
-                            positionNames.forEach((positionName, i) => 
-                                (
-                                    <ListItemText primary={positionName} color={i==selectedIndex ? red : green} />
-                                )
-                            })
-                        */
-                    }
-                    <ListItem button>
-                        <ListItemText primary="Position1" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemText primary="Position 3" />
-                    </ListItem>
-                </List>
-            </div>
+            <PositionList></PositionList>
         </div>
     );
 }

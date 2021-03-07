@@ -97,3 +97,37 @@ export function resetRecentUnlockInView() {
     type: 'RESET_RECENT_UNLOCK'
   }
 }
+
+export function selectPosition(positionName){
+  return{
+    type: 'SELECT_POSITION',
+    payload: {
+      positionName: positionName
+    }
+  }
+}
+
+export function loadPositions(){
+  return {
+    type:'LOAD_POSITION_REQUEST', 
+    
+  }
+}
+
+export function deletePosition(positionName) {
+  return {
+    type: 'DELETE_POSITION_REQUEST',
+    payload: {
+      positionName: positionName
+    }
+  }
+}
+
+export function goToPosition(selectedPositionName){
+  return{
+    type: 'GOTO_POSITION_REQUEST',
+    payload:{
+      positionName: selectedPositionName
+    }
+  }
+}
