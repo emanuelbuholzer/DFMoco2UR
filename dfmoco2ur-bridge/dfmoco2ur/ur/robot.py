@@ -45,7 +45,9 @@ class Robot:
             pos = self.axis_controller.unscale_pos(self.target_pos, self._origin)
         finally:
             self.lock.release()
+            self.is_moving = True
             self.robot.movel(pos, self.acc, self.vel, wait=True)
+            self.at_target = True
 
     async def _target_within_safety_limits(self):
         async with self.lock:
@@ -75,6 +77,7 @@ class Robot:
         await self.set_acc(self.config.get("ur.acc"))
         await self.set_vel(self.config.get("ur.vel"))
         self._free_drive = False
+        self.at_target = False
         self.rate_limit = AsyncLimiter(self.config.get("ur.movement_aggregator.max_throughput"), self.config.get("ur.movement_aggregator.interval"))
         self.dashboard = dashboard
 
@@ -186,6 +189,7 @@ class Robot:
             
             async with self.lock:
                 self.target_pos = np.copy(np.array(target_pos))
+                self.at_target = False
         else:
             if not axis in range(0, num_axes):
                 raise Exception(f"No such axis {axis}")
@@ -194,6 +198,7 @@ class Robot:
             
             async with self.lock:
                 self.target_pos[axis] = target_pos
+                self.at_target = False
 
     async def move_to_target_pos(self):
         """
@@ -201,7 +206,6 @@ class Robot:
 
         Aggregate movements using a leaky bucket and an initial timeout.
         """
-        self.is_moving = True
         async with self.rate_limit:
             try:
                 await asyncio.sleep(self.config.get("ur.movement_aggregator.initial_timeout"))
@@ -235,6 +239,7 @@ class Robot:
         # http://users.cecs.anu.edu.au/~roy/spatial/ for more information
         sv = np.zeros(num_axes).astype(int)
         sv[axis] = normalized_direction
+        self.at_target = False
         self._speedl(sv, step_acc)
 
     async def stop_axis(self, axis):
@@ -249,12 +254,14 @@ class Robot:
         self._speedl(sv, 0.1)
         pos = self.get_pos()
         await self.set_target_pos(pos)
+        self.at_target = True
 
     def stop(self):
         """
         Stop the robot.
         """
         self.robot.stop()
+        self.at_target = True
 
     async def set_freedrive(self, enabled=True):
         if enabled:

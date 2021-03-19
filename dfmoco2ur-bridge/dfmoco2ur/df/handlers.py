@@ -25,7 +25,13 @@ async def init_robot(handle, _msg_args):
 
 
 async def are_motors_moving(handle, msg_args):
-    if handle.robot.is_moving or handle.robot.robot.is_program_running():
+    moving = np.array([])
+
+    moving = np.append(moving, handle.robot.is_moving)
+    moving = np.append(moving, handle.robot.robot.is_program_running())
+    moving = np.append(moving, not handle.robot.at_target)
+
+    if moving.any():
         return "ms 111111"
     else:
         return "ms 000000"
@@ -44,8 +50,8 @@ async def move_motor_to_pos(handle, msg_args):
     # TODO: Should we enforce limits?
     target_pos = int(msg_args[1])
 
-    await handle.robot.set_target_pos(target_pos, axis)
-
+    #await handle.robot.set_target_pos(target_pos, axis)
+    asyncio.ensure_future(handle.robot.set_target_pos(target_pos, axis))
     asyncio.ensure_future(handle.robot.move_to_target_pos())
 
     actual_pos = handle.robot.get_pos()[axis]
