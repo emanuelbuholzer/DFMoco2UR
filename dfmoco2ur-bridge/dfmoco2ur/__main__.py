@@ -27,17 +27,16 @@ if __name__ == '__main__':
     try:
         with open(args.config, 'r') as raw_config:
             config = Configuration(yaml.load(raw_config, Loader=yaml.FullLoader))
-            
-            # Setup logging
-            # TODO: We might want to send our logs out via a Websocket.
-            logger = logging.getLogger("dfmoco2ur")
-            logger.setLevel(config.get("logging.dfmoco2ur"))
-            logger.addHandler(logging.StreamHandler())
-            for l in config.get('logging'):
-                level = config.get(f'logging.{l}')
-                logging.getLogger(l).setLevel(level)
-            
-            asyncio.run(bridge.run(config))
     except FileNotFoundError as err:
-        logging.critical(err)
-        exit(1)
+        logging.error(err)
+        config = Configuration({})
+
+    # Setup logging
+    logger = logging.getLogger("dfmoco2ur")
+    logger.setLevel(config.get("logging.dfmoco2ur"))
+    logger.addHandler(logging.StreamHandler())
+    for l in config.get('logging'):
+        level = config.get(f'logging.{l}')
+        logging.getLogger(l).setLevel(level)
+    
+    asyncio.run(bridge.run(config))
