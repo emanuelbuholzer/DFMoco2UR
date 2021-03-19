@@ -36,10 +36,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:no_browser": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "exit 0",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "demo": "concurrently \"npm run start:no_browser\" \"wait-on http://localhost:3000 && electron .\""
   },
   "eslintConfig": {
     "extends": "react-app"

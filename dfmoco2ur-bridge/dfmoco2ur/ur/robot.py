@@ -11,8 +11,9 @@ from dfmoco2ur.ur.axis.controller import AxisController
 
 class Robot:
 
-    def __init__(self, config):
+    def __init__(self, config, userlog):
         self.config = config
+        self.userlog = userlog
         self.lock = asyncio.Lock()
         self.logger = logging.getLogger(__name__)
         self.has_setup = False
@@ -48,6 +49,7 @@ class Robot:
             self.is_moving = True
             self.robot.movel(pos, self.acc, self.vel, wait=True)
             self.at_target = True
+            await self.userlog.info("Robot has arrived at its target position")
 
     async def _target_within_safety_limits(self):
         async with self.lock:
@@ -70,7 +72,9 @@ class Robot:
             return
 
         async with self.lock:
+            await self.userlog.info("Trying to connect to the Universal Robot")
             self.robot = urx.Robot(self.config.get('ur.host'))
+            await self.userlog.info("Successfully connected to the Universal Robot")
 
         await self.set_tool_center_point(tuple(self.config.get("ur.tool_center_point")))
         await self.set_payload(self.config.get("ur.weight"), tuple(self.config.get("ur.center_of_gravity")))
@@ -221,11 +225,13 @@ class Robot:
                 if within_limits:
                     await self._move_to_target_pos()
             except urx.urrobot.RobotException:
-                self.logger.error("Robot stopped, trying to unlock robot")
+                await self.userlog.error("Robot has faced an issue, trying to unlock robot")
                 within_limits = await self._target_within_safety_limits()
                 if within_limits:
                     await self.dashboard.unlock_protective_stop()
                     await self._move_to_target_pos()
+                else:
+                    await self.userlog.error("Robot could not be unlocked. Try manually in the UI or as a last option on the Polyscope")
             self.is_moving = False
 
     async def step_axis(self, kind, axis, direction):

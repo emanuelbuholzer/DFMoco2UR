@@ -75,7 +75,9 @@ export default function reducer(state = initialState, action = {}) {
     case "SOCKET_MESSAGE_SAVE_RESPONSE":
       return Object.assign({}, state, {
         saveEnabled: false,
-        positionNames: state.positionNames.concat([action.payload.positionName])
+        positionNames: state.positionNames
+          .filter(positionName => positionName !== action.payload.positionName)
+          .concat([action.payload.positionName])
 
       });
 

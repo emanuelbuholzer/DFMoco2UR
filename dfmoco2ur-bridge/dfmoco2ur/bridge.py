@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 def get_handle(config):
     Handle = namedtuple('Handle', ['config', 'robot', 'dashboard', 'userlog'])
 
-    robot = Robot(config)
-    dashboard = Dashboard(config)
     userlog = Logger(config)
+    robot = Robot(config, userlog)
+    dashboard = Dashboard(config)    
 
     return Handle(config, robot, dashboard, userlog)
 

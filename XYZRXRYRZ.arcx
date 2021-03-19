@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scen:scene xmlns:scen="http://caliri.com/motion/scene">
+  <scen:axis connectionType="1" stepsPerUnit="1" connectionChannel="1" graphSolo="false" settleTime="1.5" viewPosition="20" currentPosition="5659" integral="false" pulseRate="1000" acceleration="2" indexCount="1" runMaxVelocity="2000" graphHide="false" name="Y" base="0" frameToFrameSpeed="8" runMaxAcceleration="1000" graphColor="-48806"/>
+  <scen:axis connectionType="1" stepsPerUnit="1" connectionChannel="2" graphSolo="false" settleTime="1.5" viewPosition="10" currentPosition="-24620" integral="false" pulseRate="1000" acceleration="2" indexCount="1" runMaxVelocity="2000" graphHide="false" name="X" base="0" frameToFrameSpeed="8" runMaxAcceleration="1000" graphColor="-16711732"/>
+  <scen:axis connectionType="1" stepsPerUnit="1" connectionChannel="3" graphSolo="false" settleTime="1.5" viewPosition="30" currentPosition="14156" integral="false" pulseRate="1000" acceleration="2" indexCount="1" runMaxVelocity="2000" graphHide="false" name="Z" base="0" frameToFrameSpeed="8" runMaxAcceleration="1000" graphColor="-14080579"/>
+  <scen:axis connectionType="1" stepsPerUnit="1" connectionChannel="4" graphSolo="false" settleTime="1.5" viewPosition="50" currentPosition="2076" integral="false" pulseRate="1000" acceleration="2" indexCount="1" runMaxVelocity="2000" graphHide="false" name="RY" base="0" frameToFrameSpeed="8" runMaxAcceleration="1000" graphColor="-16745530"/>
+  <scen:axis connectionType="1" stepsPerUnit="1" connectionChannel="5" graphSolo="false" settleTime="1.5" viewPosition="40" currentPosition="-30" integral="false" pulseRate="1000" acceleration="2" indexCount="1" runMaxVelocity="2000" graphHide="false" name="RX" base="0" frameToFrameSpeed="8" runMaxAcceleration="1000" graphColor="-11009901"/>
+  <scen:axis connectionType="1" stepsPerUnit="1" connectionChannel="6" graphSolo="false" settleTime="1.5" viewPosition="60" currentPosition="1086" integral="false" pulseRate="1000" acceleration="2" indexCount="1" runMaxVelocity="2000" graphHide="false" name="RZ" base="0" frameToFrameSpeed="8" runMaxAcceleration="1000" graphColor="-39169"/>
+  <scen:virtualConfiguration type="0">
+    <scen:axis>-1</scen:axis>
+    <scen:axis>-1</scen:axis>
+    <scen:axis>-1</scen:axis>
+    <scen:axis>-1</scen:axis>
+    <scen:axis>-1</scen:axis>
+    <scen:axis>-1</scen:axis>
+  </scen:virtualConfiguration>
+</scen:scene>

@@ -27,7 +27,7 @@ class Multiplexer:
     async def run(self, reader, writer):
         # Run the heartbeat, to inform about the robots position
         asyncio.ensure_future(heartbeat.run(self.handle, writer))
-
+        await self.handle.userlog.info("DragonFrame connected")
         while True:
             try:
                 data = await reader.readuntil(separator=b'\r\n')
@@ -50,4 +50,5 @@ class Multiplexer:
 
             except asyncio.IncompleteReadError:
                 self.logger.error(f"An incomplete read occured on the DFMocoServer, connection probably lost.")
+                await self.handle.userlog.critical("An internal error occured, please restart the application")
                 break

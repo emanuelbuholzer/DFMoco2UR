@@ -74,7 +74,7 @@ async def goto_position(handle, payload):
     
     with pos_path.open('rb') as p:
         position = np.load(p)
-        
+
         vel = await handle.robot.get_vel()
         await handle.robot.set_vel(vel*2)
         await handle.robot.set_target_pos(position)

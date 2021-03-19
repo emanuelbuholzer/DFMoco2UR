@@ -39,7 +39,7 @@ class App extends React.Component {
             </Route>
 
             <Route path="/">
-              <Redirect to="/control"></Redirect>
+              <Redirect to="/startup"></Redirect>
             </Route>
           </Switch>
         </Router>

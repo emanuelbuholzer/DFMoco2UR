@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Controls({ saveEnabled, socketMessageSavePosition, socketMessageEnableSaveDialog, selectedPositionName, goToPosition, deletePosition, freedriveEnabled, freedriveTimeout, socketMessageEnableFreedrive, socketMessageDisableFreedrive, recentlyUnlocked, socketMessageUnlock, resetRecentUnlockInView }) {
     const classes = useStyles();
-    const [positionName, setPositionName] = useState('savePositionName')
+    const [positionName, setPositionName] = useState('')
     return (
         <div>
             <div className={classes.buttonGroopRoot}>
@@ -52,7 +52,10 @@ function Controls({ saveEnabled, socketMessageSavePosition, socketMessageEnableS
                                 <label>
                                     <input type="text" placeholder="Position Name" value={positionName} onChange={(e) => setPositionName(e.target.value)}></input>
                                 </label>
-                                <Button type="submit" color="primary" onClick={() => socketMessageSavePosition(positionName)}>Save</Button>
+                                <Button type="submit" color="primary" onClick={() => {
+                                    socketMessageSavePosition(positionName)
+                                    setPositionName('')
+                                    }}>Save</Button>
                             </DialogContentText>
                         </DialogContent>
                     </Dialog>
@@ -72,7 +75,7 @@ function Controls({ saveEnabled, socketMessageSavePosition, socketMessageEnableS
                         <DialogTitle id="alert-dialog-title">{"Freedrive"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
-                                Freedrive is running now for {freedriveTimeout} seconds or until you disable the freedrive manually.
+                                Freedrive is running now for a week starting <span>{new Date().toString()}</span> or until you disable the freedrive manually.
                         </DialogContentText>
                         </DialogContent>
                         <DialogActions>

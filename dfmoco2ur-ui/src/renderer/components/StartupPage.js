@@ -6,7 +6,7 @@ import VerticalLinearStepper from './VerticalLineStepper';
 export default function StartupPage() {
     return (
         <Container>
-            <Typography variant="h3">
+            <Typography variant="h4">
                 Setup
             </Typography>
             <Typography>

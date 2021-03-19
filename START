@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# 
+# Start the DFMoco2UR bridge for demo purposes!
+
+echo -e "--- DFMoco2UR 1.0\n"
+
+npx concurrently "./start-ui.sh" "./start-bridge.sh"

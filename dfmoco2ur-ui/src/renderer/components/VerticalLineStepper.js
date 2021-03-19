@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ["Power on the Universal Robot", "Choose Axis Setup", "Create an ad"];
+  return ["Ensure the Universal Robot is started", "Connect DragonFrame"];
 }
 
 function getStepContent(step) {
@@ -42,25 +42,16 @@ function getStepContent(step) {
     case 0:
       return (
         <Typography>
-          For each ad campaign that you create, you can control how much you're
-          willing to spend on clicks and conversions, which networks and
-          geographical locations you want your ads to show on, and more.
+          Ensure the Universal Robot is up and running, such that the robot is in normal mode.
         </Typography>
       );
     case 1:
       return (
         <Typography>
-          An ad group contains one or more ads which target a shared set of
-          keywords.
-        </Typography>
-      );
-    case 2:
-      return (
-        <Typography>
-          Try out different ad text to see what brings in the most customers,
-          and learn how to enhance your ads using features like ad extensions.
-          If you run into any problems with your ads, find out how to tell if
-          they're running and how to resolve approval issues.
+          Connect the DFMoco2UR bridge in DragonFrame.
+          You can connect the bridge under: Scenes, Connections.
+          You'll need to use the DFMoco Protocol / TCP on ArcMoco #1.
+          The DFMoco2UR bridge is avaialable under 127.0.0.1:10001.
         </Typography>
       );
     default:

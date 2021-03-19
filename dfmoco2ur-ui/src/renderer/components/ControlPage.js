@@ -21,13 +21,13 @@ export default function ControlPage() {
 
     return (
         <Container>
-            <Typography variant="h3">
+            <Typography variant="h4">
                 Control
             </Typography>
             <Typography className={classes.info}>
                 For more information on how about to use hue, refer to the <Link to="/manual">hue manual</Link>.
             </Typography>
-            <Button color="secondary" variant="contained" className={classes.shutdown}>SHUTDOWN</Button>
+            {/*<Button color="secondary" variant="contained" className={classes.shutdown}>SHUTDOWN</Button>*/}
             <ControlGrid></ControlGrid>
         </Container>
     );
