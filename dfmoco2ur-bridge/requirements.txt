@@ -5,5 +5,4 @@ xdg
 numpy
 ../vendor/aiolimiter
 math3d
-grpcio
-grpcio-tools
+websockets
