@@ -15,11 +15,36 @@ mock_responses = {
         },
     "SOCKET_MESSAGE_UNLOCK_REQUEST": {
             "type": "SOCKET_MESSAGE_UNLOCK_RESPONSE"
-        }
+        },
+
+    "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG": {
+            "type": "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE_DIALOG",
+           
+        },
+    "SOCKET_MESSAGE_SAVE_REQUEST": {
+            "type": "SOCKET_MESSAGE_SAVE_RESPONSE",
+            "payload": {
+                "positionName": "peter", 
+            } 
+        },
+         "LOAD_POSITION_REQUEST": {
+            "type": "LOAD_POSITION_RESPONSE",
+            "payload": {
+                "positionNames": ["PETER", "markus", "trudi geschter", "mario", "emanuel"], 
+            } 
+        },
+    "GOTO_POSITION_REQUEST":{
+        "type": "GOTO_POSITION_RESPONSE"
+    }
+
     }
 
 
 async def run_mock(websocket, path):
+    res_dto = mock_responses["LOAD_POSITION_REQUEST"]
+    res = json.dumps(res_dto)
+        
+    await websocket.send(res)
     while True:
         req = await websocket.recv()
         print(f"< {req}")

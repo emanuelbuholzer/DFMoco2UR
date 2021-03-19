@@ -7,7 +7,10 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UnlockRobot from './UnlockRobotButton'
 import FreedriveDialog from './FreedriveDialogButton';
-
+import SavePosition from './SavePosition';
+import PositionList from './PositionList';
+import DeleteButton from './DeleteButton';
+import GoToButton from './GoToButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,24 +35,15 @@ export default function Controls() {
         <div>
             <div className={classes.buttonGroopRoot}>
                 <ButtonGroup variant="contained" color="primary" fullWidth={true}>
-                    <Button>Save</Button>
-                    <Button>Goto</Button>
-                    <Button>Delete</Button>
+                    <SavePosition></SavePosition>
+                    <GoToButton></GoToButton>
+                    <DeleteButton></DeleteButton>
                     <FreedriveDialog></FreedriveDialog>
                     <UnlockRobot></UnlockRobot>
 
                 </ButtonGroup>
             </div>
-            <div className={classes.root}>
-                <List>
-                    <ListItem button>
-                        <ListItemText primary="Position1" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemText primary="Position 3" />
-                    </ListItem>
-                </List>
-            </div>
+            <PositionList></PositionList>
         </div>
     );
 }
