@@ -4,7 +4,6 @@ import dfmoco2ur.api.actions as actions
 async def run(handle, websocket):
     while True:
         log_entry = await handle.userlog.get_log()
-
         response = {
            "type": actions.SOCKET_MESSAGE_LOG,
            "payload": {

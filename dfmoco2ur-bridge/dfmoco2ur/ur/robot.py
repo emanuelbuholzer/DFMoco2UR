@@ -134,6 +134,14 @@ class Robot:
         
         async with self.lock:
             self.vel = vel
+    
+    async def get_acc(self):
+        async with self.lock:
+            return self.acc
+    
+    async def get_vel(self):
+        async with self.lock:
+            return self.vel
         
     async def set_tool_center_point(self, tcp):
         """

@@ -5,7 +5,7 @@ const initialState = {
   connected: false,
   socket: null,
   logs: [],
-  positionNames: ["peter", "pan"],
+  positionNames: [],
   selectedPositionName: null,
 
   freedrive: {
@@ -61,22 +61,15 @@ export default function reducer(state = initialState, action = {}) {
       });
 
     case "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG":
-      state.socket.send(JSON.stringify({ type: "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG" }));
-      return state;
-
-    case "SOCKET_MESSAGE_SAVE_RESPONSE_ENABLE_DIALOG":
       return Object.assign({}, state, {
-
         saveEnabled: true,
       });
 
     case "SOCKET_MESSAGE_SAVE_REQUEST":
-      state.socket.send(JSON.stringify({ type: "SOCKET_MESSAGE_SAVE_REQUEST" }));
+      state.socket.send(JSON.stringify({ type: "SOCKET_MESSAGE_SAVE_REQUEST", payload: {positionName: action.payload.positionName} }));
       return Object.assign({}, state, {
-
         saveEnabled: false,
         positionName: action.payload.positionName
-
       });
 
     case "SOCKET_MESSAGE_SAVE_RESPONSE":
@@ -117,23 +110,19 @@ export default function reducer(state = initialState, action = {}) {
       })
 
     case "DELETE_POSITION_REQUEST":
-      // TODO: this sould not be done here, once we have the correct implementation and not a mock
-      // state.socket.send(JSON.stringify({type: 'DELETE_POSITION_REQUEST'}))
-      // return state;
+      state.socket.send(JSON.stringify({type: 'DELETE_POSITION_REQUEST', payload: { positionName: action.payload.positionName}}))
+      return state
+
+    case "DELETE_POSITION_RESPONSE":
       return Object.assign({}, state, {
         positionNames: state.positionNames.filter(positionName => positionName !== action.payload.positionName),
         selectedPositionName: undefined
       })
 
-    case "DELETE_POSITION_RESPONSE":
-      return state;
-
     case "GOTO_POSITION_REQUEST":
-      state.socket.send(JSON.stringify({ type: "GOTO_POSITION_REQUEST" }));
+      state.socket.send(JSON.stringify({ type: "GOTO_POSITION_REQUEST", payload: { positionName: action.payload.positionName} }));
       return Object.assign({}, state, {
-
         positionName: action.payload.selectedPositionName
-
       });
 
     case "GOTO_POSITION_RESPONSE":

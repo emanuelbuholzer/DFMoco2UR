@@ -78,9 +78,7 @@ export function socketMessageSavePosition(posName) {
   return {
     type: 'SOCKET_MESSAGE_SAVE_REQUEST',
     payload: {
-      save: {
-        posName: posName
-      }
+      positionName: posName
     }
   }
 }
