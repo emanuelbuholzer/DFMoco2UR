@@ -24,7 +24,7 @@ mock_responses = {
     "SOCKET_MESSAGE_SAVE_REQUEST": {
             "type": "SOCKET_MESSAGE_SAVE_RESPONSE",
             "payload": {
-                "positionName": "peter", 
+                "positionName": "sarahclaudiameieerhueber", 
             } 
         },
          "LOAD_POSITION_REQUEST": {
