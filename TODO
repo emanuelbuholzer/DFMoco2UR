@@ -1,7 +1,7 @@
 RELEASE 1.0 TODOs
 -----------------
 
-[ ] Add a cancel button to the save position dialog and stylize the input box (maybe use a material ui component, if not already in use)
+[x] Add a cancel button to the save position dialog and stylize the input box (maybe use a material ui component, if not already in use)
 [x] Get rid of electron and just serve the web version
 [x] Allow multiple Dragonframe reconnects
 [x] Allow multiple UI reconnects
