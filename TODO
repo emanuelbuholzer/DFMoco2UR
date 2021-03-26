@@ -4,7 +4,7 @@ RELEASE 1.0 TODOs
 [ ] Add a cancel button to the save position dialog and stylize the input box (maybe use a material ui component, if not already in use)
 [ ] Get rid of electron and just serve the web version
 [x] Allow multiple Dragonframe reconnects
-[ ] Allow multiple UI reconnects
+[x] Allow multiple UI reconnects
 [ ] Package the bridge with a webserver somewhere, somehow
 [ ] Stylize and rewrite the setup dialog
 [ ] Log into a file, do log rotation
