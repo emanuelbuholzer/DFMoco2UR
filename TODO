@@ -7,3 +7,4 @@ RELEASE 1.0 TODOs
 [ ] Allow multiple UI reconnects
 [ ] Package the bridge with a webserver somewhere, somehow
 [ ] Stylize and rewrite the setup dialog
+[ ] Log into a file, do log rotation
