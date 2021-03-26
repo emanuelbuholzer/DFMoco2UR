@@ -12,6 +12,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { socketMessageEnableSaveDialog, socketMessageSavePosition, goToPosition, deletePosition, socketMessageEnableFreedrive, socketMessageDisableFreedrive, socketMessageUnlock, resetRecentUnlockInView } from '../services/socket/actions';
 import { connect } from 'react-redux'
+import TextField from '@material-ui/core/TextField'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -34,30 +35,70 @@ const useStyles = makeStyles((theme) => ({
     button: {
         borderRadius: 0,
         boxShadow: 'none'
+    },
+    Button: {
+        display: 'flex',
+        flexDirection: 'row',
+        padding: '10px'
+
+    },
+    MuiDialogContentText: {
+        padding: '8px',
+
+    },
+    p: {
+        justifyContent: 'center',
+        display: 'flex',
+        flexDirection: 'row'
+
     }
+
 }));
 
-function Controls({ saveEnabled, socketMessageSavePosition, socketMessageEnableSaveDialog, selectedPositionName, goToPosition, deletePosition, freedriveEnabled, freedriveTimeout, socketMessageEnableFreedrive, socketMessageDisableFreedrive, recentlyUnlocked, socketMessageUnlock, resetRecentUnlockInView }) {
+function Controls({ socketMessageSavePosition, selectedPositionName, goToPosition, deletePosition, freedriveEnabled, freedriveTimeout, socketMessageEnableFreedrive, socketMessageDisableFreedrive, recentlyUnlocked, socketMessageUnlock, resetRecentUnlockInView }) {
     const classes = useStyles();
     const [positionName, setPositionName] = useState('')
+    const [dialogOpen, setSaveDialogOpen] = useState(false);
+
+    const handleClose = () => {
+        setSaveDialogOpen(false);
+    };
+
+    const handleOpen = () => {
+        setSaveDialogOpen(true);
+    };
+
     return (
         <div>
             <div className={classes.buttonGroopRoot}>
                 <ButtonGroup variant="contained" color="primary" fullWidth={true}>
-                    <Button variant="contained" color="primary" className={classes.button} onClick={socketMessageEnableSaveDialog}>Save</Button>
-                    <Dialog open={saveEnabled} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-                        <DialogTitle id="alert-dialog-title">{"Select a Name:"}</DialogTitle>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={handleOpen}>Save</Button>
+                    <Dialog open={dialogOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+                        <DialogTitle id="alert-dialog-title">{"Save current position"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
-                                <label>
-                                    <input type="text" placeholder="Position Name" value={positionName} onChange={(e) => setPositionName(e.target.value)}></input>
-                                </label>
-                                <Button type="submit" color="primary" onClick={() => {
-                                    socketMessageSavePosition(positionName)
-                                    setPositionName('')
-                                    }}>Save</Button>
+                                <TextField
+                                    id="standard-full-width"
+                                    label="Name of the current position"
+                                    placeholder="Position name"
+                                    helperText="Avoid special characters such as %, $ and so on. :-)"
+                                    fullWidth
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    value={positionName} onChange={(e) => setPositionName(e.target.value)}
+                                />
                             </DialogContentText>
                         </DialogContent>
+                        <DialogActions>
+                            <Button type="submit" color="primary" onClick={() => {
+                                socketMessageSavePosition(positionName)
+                                setPositionName('')
+                                handleClose()
+                            }}>Save</Button>
+                            <Button type="submit" color="secondary" id="cancelButton" onClick={handleClose}>Cancel</Button>
+                        </DialogActions>
                     </Dialog>
 
                     <Button className={classes.button} onClick={() => goToPosition(selectedPositionName)}>GoTo</Button>

@@ -60,12 +60,12 @@ export default function reducer(state = initialState, action = {}) {
         }
       });
 
-    case "SOCKET_MESSAGE_SAVE_REQUEST_ENABLE_DIALOG":
-      return Object.assign({}, state, {
-        saveEnabled: true,
-      });
 
     case "SOCKET_MESSAGE_SAVE_REQUEST":
+      if (action.payload.positionName === "") {
+        return state;
+      }
+      
       state.socket.send(JSON.stringify({ type: "SOCKET_MESSAGE_SAVE_REQUEST", payload: {positionName: action.payload.positionName} }));
       return Object.assign({}, state, {
         saveEnabled: false,
