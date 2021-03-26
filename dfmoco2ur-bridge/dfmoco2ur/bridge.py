@@ -23,6 +23,9 @@ def get_handle(config):
 async def run(config):
     handle = get_handle(config)
 
+    await handle.dashboard.setup()
+    await handle.robot.setup(handle.dashboard)
+
     api_server = await APIServer(handle).start()
     dfmoco_server = await DFMocoServer(handle).start()
     async with dfmoco_server:

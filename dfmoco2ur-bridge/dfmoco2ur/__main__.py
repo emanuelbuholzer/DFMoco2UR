@@ -23,14 +23,15 @@ if __name__ == '__main__':
                         help='Path to a configuration')
     args = parser.parse_args()
 
-    # Parse the configuration and run the scheduler
+    # Parse the configuration and run the schedule
+    config = Configuration({})
     try:
         with open(args.config, 'r') as raw_config:
-            config = Configuration(yaml.load(raw_config, Loader=yaml.FullLoader))
+            _config = Configuration(yaml.load(raw_config, Loader=yaml.FullLoader))
+            config = _config
     except FileNotFoundError as err:
-        logging.error(err)
-        config = Configuration({})
-
+        logging.debug(err)
+        
     # Setup logging
     logger = logging.getLogger("dfmoco2ur")
     logger.setLevel(config.get("logging.dfmoco2ur"))
@@ -38,5 +39,5 @@ if __name__ == '__main__':
     for l in config.get('logging'):
         level = config.get(f'logging.{l}')
         logging.getLogger(l).setLevel(level)
-    
+
     asyncio.run(bridge.run(config))
