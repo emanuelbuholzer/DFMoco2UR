@@ -6,7 +6,6 @@ from aiolimiter import AsyncLimiter
 
 
 logger = logging.getLogger(__name__)
-rate_limi = AsyncLimiter(1, 4)
 
 
 async def unsupported_operation(_handle, _msg_args):
@@ -15,9 +14,6 @@ async def unsupported_operation(_handle, _msg_args):
 
 
 async def init_robot(handle, _msg_args):
-    await handle.dashboard.setup()
-    await handle.robot.setup(handle.dashboard)
-
     version = __version__
     major_version = __version__.split('.')[0]
     num_axes = await handle.robot.get_num_axes()

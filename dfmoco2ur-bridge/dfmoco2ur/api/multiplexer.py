@@ -4,6 +4,7 @@ import dfmoco2ur.api.handlers as handlers
 import dfmoco2ur.api.log_forwarder as log_forwarder
 import dfmoco2ur.api.position_dumper  as position_dumper
 import asyncio
+import websockets
 import json
 
 class Multiplexer:
@@ -25,22 +26,26 @@ class Multiplexer:
         asyncio.ensure_future(log_forwarder.run(self.handle, websocket))
         await position_dumper.run(websocket)
         while True:
-            data = await websocket.recv()
-            self.logger.debug(f"Received message from API: {data}")
+            try:
+                data = await websocket.recv()
+                self.logger.debug(f"Received message from API: {data}")
 
-            action = json.loads(data)
+                action = json.loads(data)
 
-            action_type = action["type"]
-            action_payload = None
-            if "payload" in action:
-                action_payload = action["payload"]       
+                action_type = action["type"]
+                action_payload = None
+                if "payload" in action:
+                    action_payload = action["payload"]       
 
-            # TODO: On exit is crazy
-            handler = self.handlers.get(action_type, False)
-            if not handler:
-                self.logger.error(f"Received unknown API message: {data}")
+                # TODO: On exit is crazy
+                handler = self.handlers.get(action_type, False)
+                if not handler:
+                    self.logger.error(f"Received unknown API message: {data}")
+                    break
+
+                res = await handler(self.handle, action_payload)
+                self.logger.debug(f"Sending message to API consumer: {res}")
+                await websocket.send(res)
+            except websockets.exceptions.ConnectionClosed:
+                self.logger.info("API connection closed, probably a refresh.")
                 break
-
-            res = await handler(self.handle, action_payload)
-            self.logger.debug(f"Sending message to API consumer: {res}")
-            await websocket.send(res)

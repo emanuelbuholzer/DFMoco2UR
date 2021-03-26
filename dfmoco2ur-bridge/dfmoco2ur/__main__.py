@@ -1,8 +1,9 @@
 import logging
+from logging.handlers import TimedRotatingFileHandler
 import argparse
 import yaml
 from pathlib import Path
-from xdg import XDG_CONFIG_HOME
+from xdg import XDG_CONFIG_HOME, XDG_CACHE_HOME
 from dfmoco2ur import bridge
 from dfmoco2ur.config import Configuration
 import asyncio
@@ -23,20 +24,39 @@ if __name__ == '__main__':
                         help='Path to a configuration')
     args = parser.parse_args()
 
-    # Parse the configuration and run the scheduler
+    # Parse the configuration and run the schedule
+    config = Configuration({})
     try:
         with open(args.config, 'r') as raw_config:
-            config = Configuration(yaml.load(raw_config, Loader=yaml.FullLoader))
+            _config = Configuration(yaml.load(raw_config, Loader=yaml.FullLoader))
+            config = _config
     except FileNotFoundError as err:
-        logging.error(err)
-        config = Configuration({})
-
+        logging.debug(err)
+        
     # Setup logging
     logger = logging.getLogger("dfmoco2ur")
     logger.setLevel(config.get("logging.dfmoco2ur"))
-    logger.addHandler(logging.StreamHandler())
+
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    
+    def file_handler(filename):
+        handler = TimedRotatingFileHandler(
+            Path(XDG_CACHE_HOME).joinpath(filename),
+            when="d", interval=1, backupCount=7
+        )
+        handler.setFormatter(formatter)
+        return handler
+
+    logger.addHandler(stream_handler)
+    logger.addHandler(file_handler("dfmoco2ur.log"))
+
     for l in config.get('logging'):
         level = config.get(f'logging.{l}')
-        logging.getLogger(l).setLevel(level)
-    
+        logger = logging.getLogger(l)
+        logger.setLevel(level)
+        logger.addHandler(file_handler(f"{l}.log"))
+
     asyncio.run(bridge.run(config))

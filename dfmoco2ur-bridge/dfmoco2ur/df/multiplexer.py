@@ -49,6 +49,6 @@ class Multiplexer:
                 await writer.drain()
 
             except asyncio.IncompleteReadError:
-                self.logger.error(f"An incomplete read occured on the DFMocoServer, connection probably lost.")
-                await self.handle.userlog.critical("An internal error occured, please restart the application")
+                self.logger.error(f"Dragonframe disconnect. An incomplete read occured on the DFMocoServer, connection probably lost.")
+                await self.handle.userlog.info("Dragonframe disconnected. Please reconnect to animate.")
                 break
